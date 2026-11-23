@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TW Strategy Lab — 量化回測與紙上交易 / Backtesting & paper trading</title>
+<style>
+body { font-family: -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; margin: 0; color: #222; line-height: 1.6; }
+header, main, footer { max-width: 860px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 28px; margin-bottom: 4px; }
+h2 { font-size: 18px; margin-top: 32px; }
+.lead { color: #444; font-size: 16px; }
+.warn { background: #fff7e6; border: 1px solid #f5c35f; padding: 12px 16px; border-radius: 8px; font-size: 14px; }
+ul { padding-left: 20px; }
+a.btn { display: inline-block; margin: 6px 8px 6px 0; padding: 8px 14px; border-radius: 8px; border: 1px solid #1f77b4; color: #1f77b4; text-decoration: none; }
+button#lang { float: right; padding: 6px 12px; border-radius: 8px; border: 1px solid #888; background: #fff; cursor: pointer; }
+.hidden { display: none; }
+footer { font-size: 12px; color: #666; border-top: 1px solid #eee; margin-top: 40px; }
+</style>
+</head>
+<body>
+<header>
+<button id="lang" type="button">English</button>
+<h1>TW Strategy Lab</h1>
+
+<div class="zh">
+<p class="lead">免費、開源的台股量化回測與紙上交易工具。適合想學習策略驗證的個人投資者與學生。</p>
+<div class="warn">本站不提供任何投資建議、個股推薦或報酬承諾。所有範例使用模擬資料，不是真實股價。過去的回測結果不代表未來表現。本工具不會下單，也不保管任何資金。</div>
+</div>
+<div class="en hidden">
+<p class="lead">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Built for individual investors and students who want to test strategies.</p>
+<div class="warn">This site gives no investment advice, stock recommendations or return promises. All examples use simulated data, not real prices. Past backtest results do not predict future performance. The tool places no orders and holds no funds.</div>
+</div>
+</header>
+
+<main>
+<div class="zh">
+<h2>功能</h2>
+<ul>
+<li>單一標的回測：SMA 交叉、唐奇安通道、動量策略，含交易成本（手續費、證交稅、滑價）。</li>
+<li>滾動前進驗證：參數只在訓練區間選擇，樣本外區間才評估。</li>
+<li>多標的投資組合：等權或訊號加權，可設定再平衡頻率與單一標的上限。</li>
+<li>風險控管：停損、單日虧損上限、最大回撤停止。</li>
+<li>績效指標：Sharpe、Sortino、Calmar。</li>
+<li>紙上交易：只模擬下單，記錄於 JSON 與 HTML 日報。</li>
+</ul>
+<h2>範例報告</h2>
+<p>以模擬資料產生的報告，展示格式與指標。</p>
+<a class="btn" href="reports/sample-zh.html">範例報告（模擬資料）</a>
+<h2>原始碼</h2>
+<a class="btn" href="https://github.com/Black-tea666888/quant-platform">GitHub：quant-platform</a>
+</div>
+
+<div class="en hidden">
+<h2>Features</h2>
+<ul>
+<li>Single-asset backtests: SMA crossover, Donchian channel, momentum, with trading costs (commission, sell tax, slippage).</li>
+<li>Walk-forward validation: parameters are chosen on training windows only, and tested out of sample.</li>
+<li>Multi-asset portfolios: equal or signal weights, configurable rebalancing and per-asset caps.</li>
+<li>Risk controls: stop loss, daily loss limit, maximum drawdown halt.</li>
+<li>Metrics: Sharpe, Sortino, Calmar.</li>
+<li>Paper trading: simulated orders only, logged to JSON and an HTML daily summary.</li>
+</ul>
+<h2>Sample report</h2>
+<p>A report built from simulated data to show the format and metrics.</p>
+<a class="btn" href="reports/sample-en.html">Sample report (simulated data)</a>
+<h2>Source code</h2>
+<a class="btn" href="https://github.com/Black-tea666888/quant-platform">GitHub: quant-platform</a>
+</div>
+</main>
+
+<footer>
+<div class="zh">© TW Strategy Lab · 本站內容僅供教育用途。</div>
+<div class="en hidden">© TW Strategy Lab · For educational purposes only.</div>
+</footer>
+
+<script>
+(function () {
+  var btn = document.getElementById('lang');
+  var zh = true;
+  btn.addEventListener('click', function () {
+    zh = !zh;
+    document.documentElement.lang = zh ? 'zh-TW' : 'en';
+    document.querySelectorAll('.zh').forEach(function (e) { e.classList.toggle('hidden', !zh); });
+    document.querySelectorAll('.en').forEach(function (e) { e.classList.toggle('hidden', zh); });
+    btn.textContent = zh ? 'English' : '中文';
+  });
+})();
+</script>
+</body>
+</html>
