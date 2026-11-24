@@ -42,6 +42,34 @@ h2 { font-size: 22px; margin: 40px 0 14px; }
 .tag { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: rgba(15,157,138,.15); color: var(--accent-2); margin-left: 6px; vertical-align: middle; }
 footer { max-width: 980px; margin: 24px auto 40px; padding: 0 24px; font-size: 13px; color: var(--muted); }
 a { color: var(--accent); }
+
+/* ---- motion ---- */
+@keyframes hero-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.hero { background-size: 200% 200%; animation: hero-shift 14s ease infinite; }
+.hero h1, .hero .lead, .hero .cta { animation: rise .7s ease both; }
+.hero .lead { animation-delay: .1s; }
+.hero .cta { animation-delay: .2s; }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+.grid .card { transition: transform .25s ease, box-shadow .25s ease; }
+.grid .card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(20,33,61,.14); }
+.card .ico { animation: float-slow 5s ease-in-out infinite; }
+.card:nth-child(2) .ico { animation-delay: .4s; }
+.card:nth-child(3) .ico { animation-delay: .8s; }
+.stat { transition: transform .25s ease; }
+.stat:hover { transform: translateY(-3px); }
+.cta a { transition: transform .15s ease, box-shadow .15s ease; }
+.cta a:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,.18); }
+button#lang { transition: background .2s ease; }
+button#lang:hover { background: rgba(255,255,255,.25); }
+.preview { transition: box-shadow .3s ease; }
+.preview:hover { box-shadow: 0 14px 34px rgba(20,33,61,.14); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
 </style>
 </head>
 <body>
@@ -69,15 +97,15 @@ a { color: var(--accent); }
   </div>
 </section>
 
-<section class="stats wrap" style="padding:0 24px">
-  <div class="stat"><b>3</b><span class="zh">內建策略（SMA、唐奇安、動量）</span><span class="en hidden">Built-in strategies (SMA, Donchian, momentum)</span></div>
-  <div class="stat"><b>0</b><span class="zh">下單功能（僅紙上交易）</span><span class="en hidden">Live order features (paper trading only)</span></div>
-  <div class="stat"><b>3</b><span class="zh">成本項目：手續費、證交稅、滑價</span><span class="en hidden">Cost items: commission, sell tax, slippage</span></div>
+<section class="stats wrap reveal" style="padding:0 24px">
+  <div class="stat"><b data-count="3">3</b><span class="zh">內建策略（SMA、唐奇安、動量）</span><span class="en hidden">Built-in strategies (SMA, Donchian, momentum)</span></div>
+  <div class="stat"><b data-count="0">0</b><span class="zh">下單功能（僅紙上交易）</span><span class="en hidden">Live order features (paper trading only)</span></div>
+  <div class="stat"><b data-count="3">3</b><span class="zh">成本項目：手續費、證交稅、滑價</span><span class="en hidden">Cost items: commission, sell tax, slippage</span></div>
 </section>
 
 <main>
   <div class="zh">
-    <h2>功能</h2>
+    <h2 class="reveal">功能</h2>
     <div class="grid">
       <div class="card"><div class="ico">📈</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量策略，扣除交易成本後計算績效。</p></div>
       <div class="card"><div class="ico">🧪</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
@@ -88,7 +116,7 @@ a { color: var(--accent); }
     </div>
   </div>
   <div class="en hidden">
-    <h2>Features</h2>
+    <h2 class="reveal">Features</h2>
     <div class="grid">
       <div class="card"><div class="ico">📈</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with trading costs deducted.</p></div>
       <div class="card"><div class="ico">🧪</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample.</p></div>
@@ -100,7 +128,7 @@ a { color: var(--accent); }
   </div>
 
   <h2 id="preview">範例報告 <span class="zh" style="font-size:13px;color:var(--muted)">（模擬資料）</span><span class="en hidden" style="font-size:13px;color:var(--muted)">(simulated data)</span></h2>
-  <div class="preview">
+  <div class="preview reveal">
     <header>
       <span class="zh">以模擬價格產生，展示報告格式與指標，非真實股價。</span>
       <span class="en hidden">Generated from simulated prices to show the report format. Not real market data.</span>
@@ -111,7 +139,7 @@ a { color: var(--accent); }
     <iframe class="en hidden" src="reports/sample-en.html" title="Sample report"></iframe>
   </div>
 
-  <div class="warn">
+  <div class="warn reveal">
     <div class="zh">本站不提供任何投資建議、個股推薦或報酬承諾。範例使用模擬資料，不是真實股價。過去的回測結果不代表未來表現。本工具不會下單，也不保管任何資金。</div>
     <div class="en hidden">This site gives no investment advice, stock recommendations or return promises. Examples use simulated data, not real prices. Past backtest results do not predict future performance. The tool places no orders and holds no funds.</div>
   </div>
@@ -133,6 +161,43 @@ a { color: var(--accent); }
     document.querySelectorAll('.en').forEach(function (e) { e.classList.toggle('hidden', zh); });
     btn.textContent = zh ? 'English' : '中文';
   });
+})();
+
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.reveal');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.15 });
+    targets.forEach(function (el) { io.observe(el); });
+  } else {
+    targets.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  function countUp(el) {
+    var end = parseInt(el.getAttribute('data-count'), 10);
+    if (reduce || isNaN(end)) return;
+    var start = performance.now(), dur = 900;
+    function tick(now) {
+      var k = Math.min((now - start) / dur, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) requestAnimationFrame(tick);
+    }
+    el.textContent = '0';
+    requestAnimationFrame(tick);
+  }
+  var counters = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window) {
+    var co = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { countUp(en.target); co.unobserve(en.target); }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { co.observe(el); });
+  }
 })();
 </script>
 </body>
