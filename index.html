@@ -11,7 +11,7 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.65; }
-.hero { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; padding: 56px 24px 72px; }
+.hero { color: #fff; padding: 56px 24px 72px; }
 .wrap { max-width: 980px; margin: 0 auto; }
 .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .brand { font-weight: 700; letter-spacing: .02em; }
@@ -20,20 +20,20 @@ h1 { font-size: clamp(28px, 4vw, 40px); margin: 36px 0 10px; line-height: 1.2; }
 .lead { font-size: 17px; max-width: 640px; opacity: .95; margin: 0; }
 .cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
 .cta a { padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px; }
-.cta .primary { background: #fff; color: var(--accent); }
+.cta .primary { background: #fff; color: #0f2a44; }
 .cta .ghost { border: 1px solid rgba(255,255,255,.7); color: #fff; }
 .stats { margin: -40px auto 0; max-width: 980px; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-.stat { background: var(--card); border-radius: 14px; padding: 18px; box-shadow: 0 8px 24px rgba(20,33,61,.08); }
+.stat { background: var(--card); border: 1px solid rgba(128,128,128,.2); border-radius: 8px; padding: 18px; }
 .stat b { display: block; font-size: 22px; color: var(--accent); }
 .stat span { font-size: 13px; color: var(--muted); }
 main { max-width: 980px; margin: 0 auto; padding: 40px 24px 16px; }
 h2 { font-size: 22px; margin: 40px 0 14px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.card { background: var(--card); border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(20,33,61,.06); }
-.card .ico { width: 38px; height: 38px; border-radius: 10px; background: rgba(31,111,235,.12); display: grid; place-items: center; font-size: 18px; margin-bottom: 10px; }
+.card { background: var(--card); border-radius: 8px; padding: 20px; }
+.card .ico { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: var(--accent); margin-bottom: 8px; }
 .card h3 { font-size: 16px; margin: 0 0 6px; }
 .card p { margin: 0; color: var(--muted); font-size: 14px; }
-.preview { background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(20,33,61,.06); }
+.preview { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,.2); }
 .preview header { padding: 14px 18px; border-bottom: 1px solid rgba(128,128,128,.2); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .preview header span { font-size: 13px; color: var(--muted); }
 .preview iframe { width: 100%; height: 520px; border: 0; background: #fff; }
@@ -47,25 +47,22 @@ a { color: var(--accent); }
 @keyframes hero-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-.hero { background-size: 200% 200%; animation: hero-shift 14s ease infinite; }
+.hero { background-color: #0f2a44; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 32px 32px; }
 .hero h1, .hero .lead, .hero .cta { animation: rise .7s ease both; }
 .hero .lead { animation-delay: .1s; }
 .hero .cta { animation-delay: .2s; }
 .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.in { opacity: 1; transform: none; }
-.grid .card { transition: transform .25s ease, box-shadow .25s ease; }
-.grid .card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(20,33,61,.14); }
-.card .ico { animation: float-slow 5s ease-in-out infinite; }
-.card:nth-child(2) .ico { animation-delay: .4s; }
-.card:nth-child(3) .ico { animation-delay: .8s; }
-.stat { transition: transform .25s ease; }
-.stat:hover { transform: translateY(-3px); }
+.grid .card { border: 1px solid rgba(128,128,128,.2); box-shadow: none; transition: border-color .2s ease; }
+.grid .card:hover { border-color: var(--accent); }
+
+
 .cta a { transition: transform .15s ease, box-shadow .15s ease; }
-.cta a:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,.18); }
+.cta a:hover { opacity: .85; }
 button#lang { transition: background .2s ease; }
 button#lang:hover { background: rgba(255,255,255,.25); }
-.preview { transition: box-shadow .3s ease; }
-.preview:hover { box-shadow: 0 14px 34px rgba(20,33,61,.14); }
+
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal { opacity: 1; transform: none; }
@@ -107,23 +104,23 @@ button#lang:hover { background: rgba(255,255,255,.25); }
   <div class="zh">
     <h2 class="reveal">功能</h2>
     <div class="grid">
-      <div class="card"><div class="ico">📈</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量策略，扣除交易成本後計算績效。</p></div>
-      <div class="card"><div class="ico">🧪</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
-      <div class="card"><div class="ico">🧺</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限。</p></div>
-      <div class="card"><div class="ico">🛡️</div><h3>風險控管</h3><p>停損、單日虧損上限、最大回撤停止，超過門檻自動不再持有。</p></div>
-      <div class="card"><div class="ico">📊</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上月報酬表與交易明細。</p></div>
-      <div class="card"><div class="ico">📝</div><h3>紙上交易</h3><p>只模擬下單，記錄於 JSON 與 HTML 日報，不接任何券商。</p></div>
+      <div class="card"><div class="ico">01</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量策略，扣除交易成本後計算績效。</p></div>
+      <div class="card"><div class="ico">02</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
+      <div class="card"><div class="ico">03</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限。</p></div>
+      <div class="card"><div class="ico">04</div><h3>風險控管</h3><p>停損、單日虧損上限、最大回撤停止，超過門檻自動不再持有。</p></div>
+      <div class="card"><div class="ico">05</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上月報酬表與交易明細。</p></div>
+      <div class="card"><div class="ico">06</div><h3>紙上交易</h3><p>只模擬下單，記錄於 JSON 與 HTML 日報，不接任何券商。</p></div>
     </div>
   </div>
   <div class="en hidden">
     <h2 class="reveal">Features</h2>
     <div class="grid">
-      <div class="card"><div class="ico">📈</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with trading costs deducted.</p></div>
-      <div class="card"><div class="ico">🧪</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample.</p></div>
-      <div class="card"><div class="ico">🧺</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps.</p></div>
-      <div class="card"><div class="ico">🛡️</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and a maximum drawdown halt.</p></div>
-      <div class="card"><div class="ico">📊</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, plus a monthly return table and trade list.</p></div>
-      <div class="card"><div class="ico">📝</div><h3>Paper trading</h3><p>Simulated orders only, logged to JSON and an HTML daily summary. No broker connection.</p></div>
+      <div class="card"><div class="ico">01</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with trading costs deducted.</p></div>
+      <div class="card"><div class="ico">02</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample.</p></div>
+      <div class="card"><div class="ico">03</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps.</p></div>
+      <div class="card"><div class="ico">04</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and a maximum drawdown halt.</p></div>
+      <div class="card"><div class="ico">05</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, plus a monthly return table and trade list.</p></div>
+      <div class="card"><div class="ico">06</div><h3>Paper trading</h3><p>Simulated orders only, logged to JSON and an HTML daily summary. No broker connection.</p></div>
     </div>
   </div>
 
