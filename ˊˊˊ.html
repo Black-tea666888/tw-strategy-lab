@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TW Strategy Lab — 量化回測與紙上交易 / Backtesting & paper trading</title>
+<style>
+:root { --accent: #1f6feb; --accent-2: #0f9d8a; --ink: #14213d; --muted: #5b6475; --card: #ffffff; --bg: #f5f8fc; --warn-bg: #fff7e6; --warn-bd: #f2b84b; }
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #e8eef8; --muted: #9aa6b8; --card: #161c27; --bg: #0c1118; --warn-bg: #2a2212; --warn-bd: #8a6d2a; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.65; }
+.hero { color: #fff; padding: 56px 24px 72px; }
+.wrap { max-width: 980px; margin: 0 auto; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+button#lang { padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.6); background: rgba(255,255,255,.12); color: #fff; cursor: pointer; font-size: 14px; }
+h1 { font-size: clamp(28px, 4vw, 40px); margin: 36px 0 10px; line-height: 1.2; }
+.lead { font-size: 17px; max-width: 640px; opacity: .95; margin: 0; }
+.cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+.cta a { padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px; }
+.cta .primary { background: #fff; color: #0f2a44; }
+.cta .ghost { border: 1px solid rgba(255,255,255,.7); color: #fff; }
+.stats { margin: -40px auto 0; max-width: 980px; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.stat { background: var(--card); border: 1px solid rgba(128,128,128,.2); border-radius: 8px; padding: 18px; }
+.stat b { display: block; font-size: 22px; color: var(--accent); }
+.stat span { font-size: 13px; color: var(--muted); }
+main { max-width: 980px; margin: 0 auto; padding: 40px 24px 16px; }
+h2 { font-size: 22px; margin: 40px 0 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--card); border-radius: 8px; padding: 20px; }
+.card .ico { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: var(--accent); margin-bottom: 8px; }
+.card h3 { font-size: 16px; margin: 0 0 6px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+.preview { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,.2); }
+.preview header { padding: 14px 18px; border-bottom: 1px solid rgba(128,128,128,.2); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.preview header span { font-size: 13px; color: var(--muted); }
+.preview iframe { width: 100%; height: 520px; border: 0; background: #fff; }
+.warn { margin-top: 36px; background: var(--warn-bg); border: 1px solid var(--warn-bd); border-radius: 12px; padding: 14px 18px; font-size: 14px; }
+.hidden { display: none !important; }
+.tag { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: rgba(15,157,138,.15); color: var(--accent-2); margin-left: 6px; vertical-align: middle; }
+footer { max-width: 980px; margin: 24px auto 40px; padding: 0 24px; font-size: 13px; color: var(--muted); }
+a { color: var(--accent); }
+
+/* ---- motion ---- */
+@keyframes hero-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.hero { background-color: #0f2a44; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 32px 32px; }
+.hero h1, .hero .lead, .hero .cta { animation: rise .7s ease both; }
+.hero .lead { animation-delay: .1s; }
+.hero .cta { animation-delay: .2s; }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+.grid .card { border: 1px solid rgba(128,128,128,.2); box-shadow: none; transition: border-color .2s ease; }
+.grid .card:hover { border-color: var(--accent); }
+
+
+.cta a { transition: transform .15s ease, box-shadow .15s ease; }
+.cta a:hover { opacity: .85; }
+button#lang { transition: background .2s ease; }
+button#lang:hover { background: rgba(255,255,255,.25); }
+
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">TW Strategy Lab</div>
+      <button id="lang" type="button">English</button>
+    </div>
+
+    <div class="zh">
+      <h1>用歷史資料驗證策略，<br>再決定要不要相信它</h1>
+      <p class="lead">免費、開源的台股量化回測與紙上交易工具。學生與個人投資者都能用它檢查想法，不需要下單、不需要資金。</p>
+      <div class="cta">
+        <a class="primary" href="#preview">看範例報告</a>
+      </div>
+    </div>
+    <div class="en hidden">
+      <h1>Test a strategy on history,<br>then decide whether to trust it</h1>
+      <p class="lead">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Students and individual investors can check ideas without placing orders or holding funds.</p>
+      <div class="cta">
+        <a class="primary" href="#preview">See the sample report</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats wrap reveal" style="padding:0 24px">
+  <div class="stat"><b data-count="3">3</b><span class="zh">內建策略（SMA、唐奇安、動量）</span><span class="en hidden">Built-in strategies (SMA, Donchian, momentum)</span></div>
+  <div class="stat"><b data-count="0">0</b><span class="zh">下單功能（僅紙上交易）</span><span class="en hidden">Live order features (paper trading only)</span></div>
+  <div class="stat"><b data-count="3">3</b><span class="zh">成本項目：手續費、證交稅、滑價</span><span class="en hidden">Cost items: commission, sell tax, slippage</span></div>
+</section>
+
+<main>
+  <div class="zh">
+    <h2 class="reveal">功能</h2>
+    <div class="grid">
+      <div class="card"><div class="ico">01</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量策略，扣除交易成本後計算績效。</p></div>
+      <div class="card"><div class="ico">02</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
+      <div class="card"><div class="ico">03</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限。</p></div>
+      <div class="card"><div class="ico">04</div><h3>風險控管</h3><p>停損、單日虧損上限、最大回撤停止，超過門檻自動不再持有。</p></div>
+      <div class="card"><div class="ico">05</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上月報酬表與交易明細。</p></div>
+      <div class="card"><div class="ico">06</div><h3>紙上交易</h3><p>只模擬下單，記錄於 JSON 與 HTML 日報，不接任何券商。</p></div>
+    </div>
+  </div>
+  <div class="en hidden">
+    <h2 class="reveal">Features</h2>
+    <div class="grid">
+      <div class="card"><div class="ico">01</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with trading costs deducted.</p></div>
+      <div class="card"><div class="ico">02</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample.</p></div>
+      <div class="card"><div class="ico">03</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps.</p></div>
+      <div class="card"><div class="ico">04</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and a maximum drawdown halt.</p></div>
+      <div class="card"><div class="ico">05</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, plus a monthly return table and trade list.</p></div>
+      <div class="card"><div class="ico">06</div><h3>Paper trading</h3><p>Simulated orders only, logged to JSON and an HTML daily summary. No broker connection.</p></div>
+    </div>
+  </div>
+
+  <h2 id="preview">範例報告 <span class="zh" style="font-size:13px;color:var(--muted)">（模擬資料）</span><span class="en hidden" style="font-size:13px;color:var(--muted)">(simulated data)</span></h2>
+  <div class="preview reveal">
+    <header>
+      <span class="zh">以模擬價格產生，展示報告格式與指標，非真實股價。</span>
+      <span class="en hidden">Generated from simulated prices to show the report format. Not real market data.</span>
+      <a class="zh" href="reports/sample-zh.html">全螢幕開啟</a>
+      <a class="en hidden" href="reports/sample-en.html">Open full screen</a>
+    </header>
+    <iframe class="zh" src="reports/sample-zh.html" title="範例報告"></iframe>
+    <iframe class="en hidden" src="reports/sample-en.html" title="Sample report"></iframe>
+  </div>
+
+  <div class="warn reveal">
+    <div class="zh">本站不提供任何投資建議、個股推薦或報酬承諾。範例使用模擬資料，不是真實股價。過去的回測結果不代表未來表現。本工具不會下單，也不保管任何資金。</div>
+    <div class="en hidden">This site gives no investment advice, stock recommendations or return promises. Examples use simulated data, not real prices. Past backtest results do not predict future performance. The tool places no orders and holds no funds.</div>
+  </div>
+</main>
+
+<footer>
+  <span class="zh">© TW Strategy Lab · 本站內容僅供教育用途。</span>
+  <span class="en hidden">© TW Strategy Lab · For educational purposes only.</span>
+</footer>
+
+<script>
+(function () {
+  var btn = document.getElementById('lang');
+  var zh = true;
+  btn.addEventListener('click', function () {
+    zh = !zh;
+    document.documentElement.lang = zh ? 'zh-TW' : 'en';
+    document.querySelectorAll('.zh').forEach(function (e) { e.classList.toggle('hidden', !zh); });
+    document.querySelectorAll('.en').forEach(function (e) { e.classList.toggle('hidden', zh); });
+    btn.textContent = zh ? 'English' : '中文';
+  });
+})();
+
+(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var targets = document.querySelectorAll('.reveal');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.15 });
+    targets.forEach(function (el) { io.observe(el); });
+  } else {
+    targets.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  function countUp(el) {
+    var end = parseInt(el.getAttribute('data-count'), 10);
+    if (reduce || isNaN(end)) return;
+    var start = performance.now(), dur = 900;
+    function tick(now) {
+      var k = Math.min((now - start) / dur, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) requestAnimationFrame(tick);
+    }
+    el.textContent = '0';
+    requestAnimationFrame(tick);
+  }
+  var counters = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window) {
+    var co = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { countUp(en.target); co.unobserve(en.target); }
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (el) { co.observe(el); });
+  }
+})();
+</script>
+</body>
+</html>
