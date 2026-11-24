@@ -5,73 +5,123 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TW Strategy Lab — 量化回測與紙上交易 / Backtesting & paper trading</title>
 <style>
-body { font-family: -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; margin: 0; color: #222; line-height: 1.6; }
-header, main, footer { max-width: 860px; margin: 0 auto; padding: 24px; }
-h1 { font-size: 28px; margin-bottom: 4px; }
-h2 { font-size: 18px; margin-top: 32px; }
-.lead { color: #444; font-size: 16px; }
-.warn { background: #fff7e6; border: 1px solid #f5c35f; padding: 12px 16px; border-radius: 8px; font-size: 14px; }
-ul { padding-left: 20px; }
-a.btn { display: inline-block; margin: 6px 8px 6px 0; padding: 8px 14px; border-radius: 8px; border: 1px solid #1f77b4; color: #1f77b4; text-decoration: none; }
-button#lang { float: right; padding: 6px 12px; border-radius: 8px; border: 1px solid #888; background: #fff; cursor: pointer; }
-.hidden { display: none; }
-footer { font-size: 12px; color: #666; border-top: 1px solid #eee; margin-top: 40px; }
+:root { --accent: #1f6feb; --accent-2: #0f9d8a; --ink: #14213d; --muted: #5b6475; --card: #ffffff; --bg: #f5f8fc; --warn-bg: #fff7e6; --warn-bd: #f2b84b; }
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #e8eef8; --muted: #9aa6b8; --card: #161c27; --bg: #0c1118; --warn-bg: #2a2212; --warn-bd: #8a6d2a; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.65; }
+.hero { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; padding: 56px 24px 72px; }
+.wrap { max-width: 980px; margin: 0 auto; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.brand { font-weight: 700; letter-spacing: .02em; }
+button#lang { padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.6); background: rgba(255,255,255,.12); color: #fff; cursor: pointer; font-size: 14px; }
+h1 { font-size: clamp(28px, 4vw, 40px); margin: 36px 0 10px; line-height: 1.2; }
+.lead { font-size: 17px; max-width: 640px; opacity: .95; margin: 0; }
+.cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
+.cta a { padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px; }
+.cta .primary { background: #fff; color: var(--accent); }
+.cta .ghost { border: 1px solid rgba(255,255,255,.7); color: #fff; }
+.stats { margin: -40px auto 0; max-width: 980px; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.stat { background: var(--card); border-radius: 14px; padding: 18px; box-shadow: 0 8px 24px rgba(20,33,61,.08); }
+.stat b { display: block; font-size: 22px; color: var(--accent); }
+.stat span { font-size: 13px; color: var(--muted); }
+main { max-width: 980px; margin: 0 auto; padding: 40px 24px 16px; }
+h2 { font-size: 22px; margin: 40px 0 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--card); border-radius: 14px; padding: 20px; box-shadow: 0 6px 18px rgba(20,33,61,.06); }
+.card .ico { width: 38px; height: 38px; border-radius: 10px; background: rgba(31,111,235,.12); display: grid; place-items: center; font-size: 18px; margin-bottom: 10px; }
+.card h3 { font-size: 16px; margin: 0 0 6px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+.preview { background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(20,33,61,.06); }
+.preview header { padding: 14px 18px; border-bottom: 1px solid rgba(128,128,128,.2); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.preview header span { font-size: 13px; color: var(--muted); }
+.preview iframe { width: 100%; height: 520px; border: 0; background: #fff; }
+.warn { margin-top: 36px; background: var(--warn-bg); border: 1px solid var(--warn-bd); border-radius: 12px; padding: 14px 18px; font-size: 14px; }
+.hidden { display: none !important; }
+.tag { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: rgba(15,157,138,.15); color: var(--accent-2); margin-left: 6px; vertical-align: middle; }
+footer { max-width: 980px; margin: 24px auto 40px; padding: 0 24px; font-size: 13px; color: var(--muted); }
+a { color: var(--accent); }
 </style>
 </head>
 <body>
-<header>
-<button id="lang" type="button">English</button>
-<h1>TW Strategy Lab</h1>
+<section class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">TW Strategy Lab</div>
+      <button id="lang" type="button">English</button>
+    </div>
 
-<div class="zh">
-<p class="lead">免費、開源的台股量化回測與紙上交易工具。適合想學習策略驗證的個人投資者與學生。</p>
-<div class="warn">本站不提供任何投資建議、個股推薦或報酬承諾。所有範例使用模擬資料，不是真實股價。過去的回測結果不代表未來表現。本工具不會下單，也不保管任何資金。</div>
-</div>
-<div class="en hidden">
-<p class="lead">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Built for individual investors and students who want to test strategies.</p>
-<div class="warn">This site gives no investment advice, stock recommendations or return promises. All examples use simulated data, not real prices. Past backtest results do not predict future performance. The tool places no orders and holds no funds.</div>
-</div>
-</header>
+    <div class="zh">
+      <h1>用歷史資料驗證策略，<br>再決定要不要相信它</h1>
+      <p class="lead">免費、開源的台股量化回測與紙上交易工具。學生與個人投資者都能用它檢查想法，不需要下單、不需要資金。</p>
+      <div class="cta">
+        <a class="primary" href="#preview">看範例報告</a>
+        <a class="ghost" href="https://github.com/Black-tea666888/quant-platform">原始碼</a>
+      </div>
+    </div>
+    <div class="en hidden">
+      <h1>Test a strategy on history,<br>then decide whether to trust it</h1>
+      <p class="lead">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Students and individual investors can check ideas without placing orders or holding funds.</p>
+      <div class="cta">
+        <a class="primary" href="#preview">See the sample report</a>
+        <a class="ghost" href="https://github.com/Black-tea666888/quant-platform">Source code</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats wrap" style="padding:0 24px">
+  <div class="stat"><b>3</b><span class="zh">內建策略（SMA、唐奇安、動量）</span><span class="en hidden">Built-in strategies (SMA, Donchian, momentum)</span></div>
+  <div class="stat"><b>0</b><span class="zh">下單功能（僅紙上交易）</span><span class="en hidden">Live order features (paper trading only)</span></div>
+  <div class="stat"><b>3</b><span class="zh">成本項目：手續費、證交稅、滑價</span><span class="en hidden">Cost items: commission, sell tax, slippage</span></div>
+</section>
 
 <main>
-<div class="zh">
-<h2>功能</h2>
-<ul>
-<li>單一標的回測：SMA 交叉、唐奇安通道、動量策略，含交易成本（手續費、證交稅、滑價）。</li>
-<li>滾動前進驗證：參數只在訓練區間選擇，樣本外區間才評估。</li>
-<li>多標的投資組合：等權或訊號加權，可設定再平衡頻率與單一標的上限。</li>
-<li>風險控管：停損、單日虧損上限、最大回撤停止。</li>
-<li>績效指標：Sharpe、Sortino、Calmar。</li>
-<li>紙上交易：只模擬下單，記錄於 JSON 與 HTML 日報。</li>
-</ul>
-<h2>範例報告</h2>
-<p>以模擬資料產生的報告，展示格式與指標。</p>
-<a class="btn" href="reports/sample-zh.html">範例報告（模擬資料）</a>
-<h2>原始碼</h2>
-<a class="btn" href="https://github.com/Black-tea666888/quant-platform">GitHub：quant-platform</a>
-</div>
+  <div class="zh">
+    <h2>功能</h2>
+    <div class="grid">
+      <div class="card"><div class="ico">📈</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量策略，扣除交易成本後計算績效。</p></div>
+      <div class="card"><div class="ico">🧪</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
+      <div class="card"><div class="ico">🧺</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限。</p></div>
+      <div class="card"><div class="ico">🛡️</div><h3>風險控管</h3><p>停損、單日虧損上限、最大回撤停止，超過門檻自動不再持有。</p></div>
+      <div class="card"><div class="ico">📊</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上月報酬表與交易明細。</p></div>
+      <div class="card"><div class="ico">📝</div><h3>紙上交易</h3><p>只模擬下單，記錄於 JSON 與 HTML 日報，不接任何券商。</p></div>
+    </div>
+  </div>
+  <div class="en hidden">
+    <h2>Features</h2>
+    <div class="grid">
+      <div class="card"><div class="ico">📈</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with trading costs deducted.</p></div>
+      <div class="card"><div class="ico">🧪</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample.</p></div>
+      <div class="card"><div class="ico">🧺</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps.</p></div>
+      <div class="card"><div class="ico">🛡️</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and a maximum drawdown halt.</p></div>
+      <div class="card"><div class="ico">📊</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, plus a monthly return table and trade list.</p></div>
+      <div class="card"><div class="ico">📝</div><h3>Paper trading</h3><p>Simulated orders only, logged to JSON and an HTML daily summary. No broker connection.</p></div>
+    </div>
+  </div>
 
-<div class="en hidden">
-<h2>Features</h2>
-<ul>
-<li>Single-asset backtests: SMA crossover, Donchian channel, momentum, with trading costs (commission, sell tax, slippage).</li>
-<li>Walk-forward validation: parameters are chosen on training windows only, and tested out of sample.</li>
-<li>Multi-asset portfolios: equal or signal weights, configurable rebalancing and per-asset caps.</li>
-<li>Risk controls: stop loss, daily loss limit, maximum drawdown halt.</li>
-<li>Metrics: Sharpe, Sortino, Calmar.</li>
-<li>Paper trading: simulated orders only, logged to JSON and an HTML daily summary.</li>
-</ul>
-<h2>Sample report</h2>
-<p>A report built from simulated data to show the format and metrics.</p>
-<a class="btn" href="reports/sample-en.html">Sample report (simulated data)</a>
-<h2>Source code</h2>
-<a class="btn" href="https://github.com/Black-tea666888/quant-platform">GitHub: quant-platform</a>
-</div>
+  <h2 id="preview">範例報告 <span class="zh" style="font-size:13px;color:var(--muted)">（模擬資料）</span><span class="en hidden" style="font-size:13px;color:var(--muted)">(simulated data)</span></h2>
+  <div class="preview">
+    <header>
+      <span class="zh">以模擬價格產生，展示報告格式與指標，非真實股價。</span>
+      <span class="en hidden">Generated from simulated prices to show the report format. Not real market data.</span>
+      <a class="zh" href="reports/sample-zh.html">全螢幕開啟</a>
+      <a class="en hidden" href="reports/sample-en.html">Open full screen</a>
+    </header>
+    <iframe class="zh" src="reports/sample-zh.html" title="範例報告"></iframe>
+    <iframe class="en hidden" src="reports/sample-en.html" title="Sample report"></iframe>
+  </div>
+
+  <div class="warn">
+    <div class="zh">本站不提供任何投資建議、個股推薦或報酬承諾。範例使用模擬資料，不是真實股價。過去的回測結果不代表未來表現。本工具不會下單，也不保管任何資金。</div>
+    <div class="en hidden">This site gives no investment advice, stock recommendations or return promises. Examples use simulated data, not real prices. Past backtest results do not predict future performance. The tool places no orders and holds no funds.</div>
+  </div>
 </main>
 
 <footer>
-<div class="zh">© TW Strategy Lab · 本站內容僅供教育用途。</div>
-<div class="en hidden">© TW Strategy Lab · For educational purposes only.</div>
+  <span class="zh">© TW Strategy Lab · 本站內容僅供教育用途。</span>
+  <span class="en hidden">© TW Strategy Lab · For educational purposes only.</span>
 </footer>
 
 <script>
