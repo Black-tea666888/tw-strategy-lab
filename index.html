@@ -104,23 +104,35 @@ button#lang:hover { background: rgba(255,255,255,.25); }
   <div class="zh">
     <h2 class="reveal">功能</h2>
     <div class="grid">
-      <div class="card"><div class="ico">01</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量策略，扣除交易成本後計算績效。</p></div>
+      <div class="card"><div class="ico">01</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量三種策略，扣除手續費、證交稅與滑價後計算績效。</p></div>
       <div class="card"><div class="ico">02</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
-      <div class="card"><div class="ico">03</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限。</p></div>
-      <div class="card"><div class="ico">04</div><h3>風險控管</h3><p>停損、單日虧損上限、最大回撤停止，超過門檻自動不再持有。</p></div>
-      <div class="card"><div class="ico">05</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上月報酬表與交易明細。</p></div>
-      <div class="card"><div class="ico">06</div><h3>紙上交易</h3><p>只模擬下單，記錄於 JSON 與 HTML 日報，不接任何券商。</p></div>
+      <div class="card"><div class="ico">03</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限，剩餘資金以現金持有。</p></div>
+      <div class="card"><div class="ico">04</div><h3>風險控管</h3><p>停損、單日虧損上限與最大回撤停止，觸發後不再持有該部位。</p></div>
+      <div class="card"><div class="ico">05</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上年化報酬、回撤與月報酬表。</p></div>
+      <div class="card"><div class="ico">06</div><h3>紙上交易</h3><p>只模擬下單，狀態存為 JSON，每日產生 HTML 摘要。不連接任何券商。</p></div>
+      <div class="card"><div class="ico">07</div><h3>資料來源</h3><p>可從 Yahoo 或 TWSE 取得歷史價格，也能匯入自己整理的 CSV 檔。</p></div>
+      <div class="card"><div class="ico">08</div><h3>自訂市場設定</h3><p>用 JSON 定義交易日數、手續費與證交稅，不限於台股預設值。</p></div>
+      <div class="card"><div class="ico">09</div><h3>離線 HTML 報告</h3><p>每次回測可輸出單一 HTML 檔，不需要伺服器或外部資源即可打開。</p></div>
+      <div class="card"><div class="ico">10</div><h3>雙語介面</h3><p>網頁與命令列都支援繁體中文與英文，報告內容也依語言輸出。</p></div>
+      <div class="card"><div class="ico">11</div><h3>選用登入與權限</h3><p>管理員與一般成員兩種角色，密碼以 PBKDF2 雜湊儲存，多次失敗會暫時鎖定。</p></div>
+      <div class="card"><div class="ico">12</div><h3>稽核紀錄</h3><p>帳號建立、權限變更與登入事件都會寫入紀錄，方便追查。</p></div>
     </div>
   </div>
   <div class="en hidden">
     <h2 class="reveal">Features</h2>
     <div class="grid">
-      <div class="card"><div class="ico">01</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with trading costs deducted.</p></div>
-      <div class="card"><div class="ico">02</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample.</p></div>
-      <div class="card"><div class="ico">03</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps.</p></div>
-      <div class="card"><div class="ico">04</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and a maximum drawdown halt.</p></div>
-      <div class="card"><div class="ico">05</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, plus a monthly return table and trade list.</p></div>
-      <div class="card"><div class="ico">06</div><h3>Paper trading</h3><p>Simulated orders only, logged to JSON and an HTML daily summary. No broker connection.</p></div>
+      <div class="card"><div class="ico">01</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with commission, sell tax and slippage deducted.</p></div>
+      <div class="card"><div class="ico">02</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample to check for overfitting.</p></div>
+      <div class="card"><div class="ico">03</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps. Unallocated cash is held.</p></div>
+      <div class="card"><div class="ico">04</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and maximum drawdown halt. Once triggered, the position is no longer held.</p></div>
+      <div class="card"><div class="ico">05</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, with CAGR, drawdown and a monthly return table.</p></div>
+      <div class="card"><div class="ico">06</div><h3>Paper trading</h3><p>Simulated orders only. State is saved as JSON and a daily HTML summary is produced. No broker connection.</p></div>
+      <div class="card"><div class="ico">07</div><h3>Data sources</h3><p>Fetch historical prices from Yahoo or TWSE, or import your own CSV file.</p></div>
+      <div class="card"><div class="ico">08</div><h3>Custom market profiles</h3><p>Define trading days, fees and sell tax in a JSON file. Not limited to the Taiwan defaults.</p></div>
+      <div class="card"><div class="ico">09</div><h3>Offline HTML reports</h3><p>Each backtest can export a single HTML file that opens without a server or external resources.</p></div>
+      <div class="card"><div class="ico">10</div><h3>Bilingual interface</h3><p>The web app and command line support Traditional Chinese and English, and reports follow the chosen language.</p></div>
+      <div class="card"><div class="ico">11</div><h3>Optional sign-in and roles</h3><p>Admin and member roles. Passwords are stored as PBKDF2 hashes, and repeated failed logins lock the account temporarily.</p></div>
+      <div class="card"><div class="ico">12</div><h3>Audit log</h3><p>Account creation, role changes and sign-in events are recorded for review.</p></div>
     </div>
   </div>
 
