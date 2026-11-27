@@ -3,357 +3,278 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TW Strategy Lab — 量化回測與紙上交易 / Backtesting & paper trading</title>
+<title>TW Strategy Lab — 量化回測與紙上交易 / Backtesting &amp; paper trading</title>
+<meta name="description" content="免費開源的台股回測與紙上交易工具。Free, open-source backtesting and paper trading for Taiwan stocks.">
 <style>
-:root { --accent: #1f6feb; --accent-2: #0f9d8a; --ink: #14213d; --muted: #5b6475; --card: #ffffff; --bg: #f5f8fc; --warn-bg: #fff7e6; --warn-bd: #f2b84b; }
-@media (prefers-color-scheme: dark) {
-  :root { --ink: #e8eef8; --muted: #9aa6b8; --card: #161c27; --bg: #0c1118; --warn-bg: #2a2212; --warn-bd: #8a6d2a; }
-}
-* { box-sizing: border-box; }
-body { margin: 0; font-family: -apple-system, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.65; }
-.hero { color: #fff; padding: 56px 24px 72px; }
-.wrap { max-width: 980px; margin: 0 auto; }
-.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.brand { font-weight: 700; letter-spacing: .02em; }
-button#lang { padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.6); background: rgba(255,255,255,.12); color: #fff; cursor: pointer; font-size: 14px; }
-h1 { font-size: clamp(28px, 4vw, 40px); margin: 36px 0 10px; line-height: 1.2; }
-.lead { font-size: 17px; max-width: 640px; opacity: .95; margin: 0; }
-.cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 10px; }
-.cta a { padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 15px; }
-.cta .primary { background: #fff; color: #0f2a44; }
-.cta .ghost { border: 1px solid rgba(255,255,255,.7); color: #fff; }
-.stats { margin: -40px auto 0; max-width: 980px; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-.stat { background: var(--card); border: 1px solid rgba(128,128,128,.2); border-radius: 8px; padding: 18px; }
-.stat b { display: block; font-size: 22px; color: var(--accent); }
-.stat span { font-size: 13px; color: var(--muted); }
-main { max-width: 980px; margin: 0 auto; padding: 40px 24px 16px; }
-h2 { font-size: 22px; margin: 40px 0 14px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-.card { background: var(--card); border-radius: 8px; padding: 20px; }
-.card .ico { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: var(--accent); margin-bottom: 8px; }
-.card h3 { font-size: 16px; margin: 0 0 6px; }
-.card p { margin: 0; color: var(--muted); font-size: 14px; }
-.preview { background: var(--card); border-radius: 8px; overflow: hidden; border: 1px solid rgba(128,128,128,.2); }
-.preview header { padding: 14px 18px; border-bottom: 1px solid rgba(128,128,128,.2); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-.preview header span { font-size: 13px; color: var(--muted); }
-.preview iframe { width: 100%; height: 520px; border: 0; background: #fff; }
-.warn { margin-top: 36px; background: var(--warn-bg); border: 1px solid var(--warn-bd); border-radius: 12px; padding: 14px 18px; font-size: 14px; }
-.hidden { display: none !important; }
-.tag { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: rgba(15,157,138,.15); color: var(--accent-2); margin-left: 6px; vertical-align: middle; }
-footer { max-width: 980px; margin: 24px auto 40px; padding: 0 24px; font-size: 13px; color: var(--muted); }
-a { color: var(--accent); }
-
-/* ---- motion ---- */
-@keyframes hero-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes float-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-.hero { background-color: #0f2a44; background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); background-size: 32px 32px; }
-.hero h1, .hero .lead, .hero .cta { animation: rise .7s ease both; }
-.hero .lead { animation-delay: .1s; }
-.hero .cta { animation-delay: .2s; }
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
-.reveal.in { opacity: 1; transform: none; }
-.grid .card { border: 1px solid rgba(128,128,128,.2); box-shadow: none; transition: border-color .2s ease; }
-.grid .card:hover { border-color: var(--accent); }
-
-
-.cta a { transition: transform .15s ease, box-shadow .15s ease; }
-.cta a:hover { opacity: .85; }
-button#lang { transition: background .2s ease; }
-button#lang:hover { background: rgba(255,255,255,.25); }
-
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .reveal { opacity: 1; transform: none; }
-}
-
-/* ---- interactive playground ---- */
-html[lang="en"] .zh { display: none !important; }
-html[lang="zh-TW"] .en { display: none !important; }
-.pg-card { background: var(--card); border: 1px solid rgba(128,128,128,.2); border-radius: 8px; padding: 20px; }
-.pg-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px 20px; align-items: end; }
-.pg-field { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--muted); }
-.pg-field select { padding: 8px; border-radius: 8px; border: 1px solid rgba(128,128,128,.4); background: var(--card); color: var(--ink); font-size: 14px; }
-.pg-field input[type=range] { width: 100%; }
-.pg-field output { color: var(--ink); font-weight: 600; }
-.pg-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
-.pg-actions button { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; font-size: 14px; }
-.pg-actions button.primary { background: var(--accent); color: #fff; }
-.pg-actions button:hover { opacity: .85; }
-#pg-chart { width: 100%; height: 300px; display: block; margin-top: 18px; }
-.pg-legend { font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; gap: 16px; flex-wrap: wrap; }
-.pg-legend i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 6px; }
-.pg-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 16px; }
-.pg-metrics div { border: 1px solid rgba(128,128,128,.2); border-radius: 8px; padding: 12px; }
-.pg-metrics b { display: block; font-size: 18px; color: var(--accent); }
-.pg-metrics span { font-size: 12px; color: var(--muted); }
-.pg-note { font-size: 13px; color: var(--muted); margin: 14px 0 0; }
-.pg-hidden { display: none !important; }
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;color:#1d2433;background:#fff;line-height:1.65}
+a{color:#1f6feb}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+header.top{border-bottom:1px solid #e3e7ee;padding:14px 0}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{font-weight:700}
+button#lang{padding:5px 12px;border:1px solid #c5ccd8;border-radius:6px;background:#fff;color:#1d2433;cursor:pointer;font-size:14px}
+h1{font-size:30px;line-height:1.3;margin:36px 0 10px}
+.lead{font-size:16px;color:#4a5365;margin:0 0 16px;max-width:680px}
+h2{font-size:21px;margin:44px 0 12px;padding-top:4px;border-top:1px solid #e3e7ee}
+h2 small{font-size:13px;font-weight:400;color:#6b7385;margin-left:6px}
+p{margin:8px 0}
+.note{font-size:14px;color:#4a5365}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+th,td{text-align:left;vertical-align:top;padding:9px 8px;border-bottom:1px solid #e3e7ee}
+th{font-weight:600;color:#4a5365;background:#f7f9fc}
+td code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#f2f4f8;padding:1px 5px;border-radius:4px;word-break:break-all}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:4px;background:#e8f1ff;color:#1f5fc4;white-space:nowrap}
+.tag.local{background:#f1f3f7;color:#4a5365}
+.pg{border:1px solid #e3e7ee;border-radius:8px;padding:18px;margin-top:12px}
+.pg-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 18px;align-items:end}
+.pg-field{display:flex;flex-direction:column;gap:6px;font-size:14px;color:#4a5365}
+.pg-field select{padding:7px;border:1px solid #c5ccd8;border-radius:6px;background:#fff;font-size:14px}
+.pg-field output{color:#1d2433;font-weight:600}
+.pg-check{display:flex;align-items:center;gap:8px;font-size:14px;color:#4a5365}
+.pg-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.pg-actions button{padding:7px 14px;border:1px solid #1f6feb;border-radius:6px;background:#fff;color:#1f6feb;cursor:pointer;font-size:14px}
+.pg-actions button.primary{background:#1f6feb;color:#fff}
+#pg-chart{width:100%;height:280px;display:block;margin-top:16px}
+.pg-legend{font-size:13px;color:#4a5365;margin-top:6px;display:flex;gap:16px;flex-wrap:wrap}
+.pg-legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:6px}
+.pg-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:14px}
+.pg-metrics div{border:1px solid #e3e7ee;border-radius:6px;padding:10px}
+.pg-metrics b{display:block;font-size:17px}
+.pg-metrics span{font-size:12px;color:#6b7385}
+.pg-hidden{display:none!important}
+footer{border-top:1px solid #e3e7ee;margin-top:48px;padding:18px 0 32px;font-size:13px;color:#6b7385}
+html[lang="en"] .zh{display:none!important}
+html[lang="zh-TW"] .en{display:none!important}
 </style>
 </head>
 <body>
-<section class="hero">
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">TW Strategy Lab</div>
-      <button id="lang" type="button">English</button>
-    </div>
+<header class="top"><div class="wrap">
+  <div class="brand">TW Strategy Lab</div>
+  <button id="lang" type="button">English</button>
+</div></header>
 
-    <div class="zh">
-      <h1>用歷史資料驗證策略，<br>再決定要不要相信它</h1>
-      <p class="lead">免費、開源的台股量化回測與紙上交易工具。學生與個人投資者都能用它檢查想法，不需要下單、不需要資金。</p>
-      <div class="cta">
-        <a class="primary" href="#preview">看範例報告</a>
-      </div>
-    </div>
-    <div class="en hidden">
-      <h1>Test a strategy on history,<br>then decide whether to trust it</h1>
-      <p class="lead">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Students and individual investors can check ideas without placing orders or holding funds.</p>
-      <div class="cta">
-        <a class="primary" href="#preview">See the sample report</a>
-      </div>
-    </div>
-  </div>
-</section>
+<main class="wrap">
+  <h1><span class="zh">用歷史資料檢查策略</span><span class="en">Check a strategy against history</span></h1>
+  <p class="lead">
+    <span class="zh">這是一個免費、開源的台股回測與紙上交易工具。下方可以直接試用一個簡化版的回測，完整功能需要在自己的電腦上執行。本工具不下單，也不保管資金。</span>
+    <span class="en">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Try a simplified backtest below. The full feature set runs on your own computer. The tool places no orders and holds no funds.</span>
+  </p>
 
-<section class="stats wrap reveal" style="padding:0 24px">
-  <div class="stat"><b data-count="3">3</b><span class="zh">內建策略（SMA、唐奇安、動量）</span><span class="en hidden">Built-in strategies (SMA, Donchian, momentum)</span></div>
-  <div class="stat"><b data-count="0">0</b><span class="zh">下單功能（僅紙上交易）</span><span class="en hidden">Live order features (paper trading only)</span></div>
-  <div class="stat"><b data-count="3">3</b><span class="zh">成本項目：手續費、證交稅、滑價</span><span class="en hidden">Cost items: commission, sell tax, slippage</span></div>
-</section>
-
-<main>
-  <div class="zh">
-    <h2 class="reveal">功能</h2>
-    <div class="grid">
-      <div class="card"><div class="ico">01</div><h3>單一標的回測</h3><p>SMA 交叉、唐奇安通道、動量三種策略，扣除手續費、證交稅與滑價後計算績效。</p></div>
-      <div class="card"><div class="ico">02</div><h3>滾動前進驗證</h3><p>參數只在訓練區間選擇，樣本外區間才評估，用來檢查策略是否過度擬合。</p></div>
-      <div class="card"><div class="ico">03</div><h3>多標的投資組合</h3><p>等權或訊號加權，可設定再平衡頻率與單一標的上限，剩餘資金以現金持有。</p></div>
-      <div class="card"><div class="ico">04</div><h3>風險控管</h3><p>停損、單日虧損上限與最大回撤停止，觸發後不再持有該部位。</p></div>
-      <div class="card"><div class="ico">05</div><h3>績效指標</h3><p>Sharpe、Sortino、Calmar，並附上年化報酬、回撤與月報酬表。</p></div>
-      <div class="card"><div class="ico">06</div><h3>紙上交易</h3><p>只模擬下單，狀態存為 JSON，每日產生 HTML 摘要。不連接任何券商。</p></div>
-      <div class="card"><div class="ico">07</div><h3>資料來源</h3><p>可從 Yahoo 或 TWSE 取得歷史價格，也能匯入自己整理的 CSV 檔。</p></div>
-      <div class="card"><div class="ico">08</div><h3>自訂市場設定</h3><p>用 JSON 定義交易日數、手續費與證交稅，不限於台股預設值。</p></div>
-      <div class="card"><div class="ico">09</div><h3>離線 HTML 報告</h3><p>每次回測可輸出單一 HTML 檔，不需要伺服器或外部資源即可打開。</p></div>
-      <div class="card"><div class="ico">10</div><h3>雙語介面</h3><p>網頁與命令列都支援繁體中文與英文，報告內容也依語言輸出。</p></div>
-      <div class="card"><div class="ico">11</div><h3>選用登入與權限</h3><p>管理員與一般成員兩種角色，密碼以 PBKDF2 雜湊儲存，多次失敗會暫時鎖定。</p></div>
-      <div class="card"><div class="ico">12</div><h3>稽核紀錄</h3><p>帳號建立、權限變更與登入事件都會寫入紀錄，方便追查。</p></div>
+  <h2 id="try"><span class="zh">互動示範</span><span class="en">Try it</span>
+    <small class="zh">模擬資料，在瀏覽器內計算，不連網</small><small class="en">Simulated data, computed in your browser, no network</small></h2>
+  <div class="pg">
+    <div class="pg-controls">
+      <label class="pg-field"><span class="zh">策略</span><span class="en">Strategy</span>
+        <select id="pg-strategy">
+          <option value="sma">SMA 均線交叉 / SMA crossover</option>
+          <option value="donchian">唐奇安通道 / Donchian channel</option>
+          <option value="momentum">動量 / Momentum</option>
+        </select>
+      </label>
+      <label class="pg-field"><span id="pg-a-label"></span>
+        <span><input type="range" id="pg-a"> <output id="pg-a-out"></output></span>
+      </label>
+      <label class="pg-field" id="pg-b-wrap"><span id="pg-b-label"></span>
+        <span><input type="range" id="pg-b"> <output id="pg-b-out"></output></span>
+      </label>
+      <label class="pg-field"><span class="zh">停損（0 = 關閉）</span><span class="en">Stop loss (0 = off)</span>
+        <span><input type="range" id="pg-stop" min="0" max="30" step="1" value="0"> <output id="pg-stop-out"></output></span>
+      </label>
     </div>
-  </div>
-  <div class="en hidden">
-    <h2 class="reveal">Features</h2>
-    <div class="grid">
-      <div class="card"><div class="ico">01</div><h3>Single-asset backtests</h3><p>SMA crossover, Donchian channel and momentum, with commission, sell tax and slippage deducted.</p></div>
-      <div class="card"><div class="ico">02</div><h3>Walk-forward validation</h3><p>Parameters are chosen on training windows only, then tested out of sample to check for overfitting.</p></div>
-      <div class="card"><div class="ico">03</div><h3>Multi-asset portfolios</h3><p>Equal or signal weights, with configurable rebalancing and per-asset caps. Unallocated cash is held.</p></div>
-      <div class="card"><div class="ico">04</div><h3>Risk controls</h3><p>Stop loss, daily loss limit and maximum drawdown halt. Once triggered, the position is no longer held.</p></div>
-      <div class="card"><div class="ico">05</div><h3>Performance metrics</h3><p>Sharpe, Sortino and Calmar, with CAGR, drawdown and a monthly return table.</p></div>
-      <div class="card"><div class="ico">06</div><h3>Paper trading</h3><p>Simulated orders only. State is saved as JSON and a daily HTML summary is produced. No broker connection.</p></div>
-      <div class="card"><div class="ico">07</div><h3>Data sources</h3><p>Fetch historical prices from Yahoo or TWSE, or import your own CSV file.</p></div>
-      <div class="card"><div class="ico">08</div><h3>Custom market profiles</h3><p>Define trading days, fees and sell tax in a JSON file. Not limited to the Taiwan defaults.</p></div>
-      <div class="card"><div class="ico">09</div><h3>Offline HTML reports</h3><p>Each backtest can export a single HTML file that opens without a server or external resources.</p></div>
-      <div class="card"><div class="ico">10</div><h3>Bilingual interface</h3><p>The web app and command line support Traditional Chinese and English, and reports follow the chosen language.</p></div>
-      <div class="card"><div class="ico">11</div><h3>Optional sign-in and roles</h3><p>Admin and member roles. Passwords are stored as PBKDF2 hashes, and repeated failed logins lock the account temporarily.</p></div>
-      <div class="card"><div class="ico">12</div><h3>Audit log</h3><p>Account creation, role changes and sign-in events are recorded for review.</p></div>
+    <div class="pg-actions" style="margin-top:14px">
+      <label class="pg-check"><input type="checkbox" id="pg-costs" checked>
+        <span class="zh">計入手續費、證交稅與滑價</span><span class="en">Include commission, sell tax and slippage</span></label>
     </div>
+    <div class="pg-actions">
+      <button type="button" class="primary" id="pg-new"><span class="zh">換一組模擬資料</span><span class="en">New simulated data</span></button>
+      <button type="button" id="pg-reset"><span class="zh">還原預設參數</span><span class="en">Reset parameters</span></button>
+    </div>
+    <canvas id="pg-chart" aria-label="equity curve"></canvas>
+    <div class="pg-legend">
+      <span><i style="background:#1f6feb"></i><span class="zh">策略淨值</span><span class="en">Strategy equity</span></span>
+      <span><i style="background:#8a94a6"></i><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></span>
+    </div>
+    <div class="pg-metrics" id="pg-metrics"></div>
+    <p class="note" style="margin-top:12px"><span class="zh">資料編號 <span id="pg-seed"></span>，為隨機漫步產生的模擬價格，不是真實股價。成本設定：手續費 0.1425%（買賣各收）、證交稅 0.3%（賣出）、滑價 0.05%（買賣各計）。</span><span class="en">Dataset <span id="pg-seed-en"></span> is a simulated random walk, not real prices. Costs: commission 0.1425% per side, sell tax 0.3% on sales, slippage 0.05% per side.</span></p>
   </div>
 
-  <section class="playground reveal" id="playground">
-    <h2>互動示範 <span class="zh" style="font-size:13px;color:var(--muted)">（模擬資料，即時計算）</span><span class="en" style="font-size:13px;color:var(--muted)">(simulated data, computed live)</span></h2>
-    <div class="pg-card">
-      <div class="pg-controls">
-        <label class="pg-field"><span class="zh">策略</span><span class="en">Strategy</span>
-          <select id="pg-strategy">
-            <option value="sma">SMA 均線交叉 / SMA crossover</option>
-            <option value="donchian">唐奇安通道 / Donchian channel</option>
-            <option value="momentum">動量 / Momentum</option>
-          </select>
-        </label>
-        <label class="pg-field" id="pg-a-wrap"><span id="pg-a-label"></span>
-          <span><input type="range" id="pg-a"> <output id="pg-a-out"></output></span>
-        </label>
-        <label class="pg-field" id="pg-b-wrap"><span id="pg-b-label"></span>
-          <span><input type="range" id="pg-b"> <output id="pg-b-out"></output></span>
-        </label>
-      </div>
-      <div class="pg-actions">
-        <button type="button" class="primary" id="pg-new"><span class="zh">換一組模擬資料</span><span class="en">New simulated data</span></button>
-        <button type="button" id="pg-reset"><span class="zh">還原預設參數</span><span class="en">Reset parameters</span></button>
-      </div>
-      <canvas id="pg-chart" aria-label="equity curve"></canvas>
-      <div class="pg-legend">
-        <span><i style="background:#1f6feb"></i><span class="zh">策略淨值</span><span class="en">Strategy equity</span></span>
-        <span><i style="background:#8a94a6"></i><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></span>
-      </div>
-      <div class="pg-metrics" id="pg-metrics"></div>
-      <p class="pg-note"><span class="zh">資料為隨機漫步模擬價格（資料編號 <span id="pg-seed"></span>），不是真實股價。成本：手續費 0.1425%（買賣各收）、證交稅 0.3%（賣出）、滑價 0.05%（買賣各計）。</span><span class="en">Prices come from a simulated random walk (dataset <span id="pg-seed-en"></span>), not real market data. Costs: commission 0.1425% per side, sell tax 0.3% on sales, slippage 0.05% per side.</span></p>
-    </div>
-  </section>
+  <h2><span class="zh">功能與用法</span><span class="en">Features and usage</span></h2>
+  <p class="note"><span class="zh">「網頁」表示可以在上方示範操作；「本機」表示要在自己的電腦執行下面的指令。</span><span class="en">"Web" means you can try it in the demo above. "Local" means run the command on your own computer.</span></p>
+  <table>
+    <tr><th><span class="zh">功能</span><span class="en">Feature</span></th><th><span class="zh">說明</span><span class="en">What it does</span></th><th><span class="zh">在哪裡用</span><span class="en">Where</span></th></tr>
+    <tr>
+      <td><span class="zh">單一標的回測</span><span class="en">Single-asset backtest</span></td>
+      <td><span class="zh">SMA 交叉、唐奇安通道、動量三種策略，扣除手續費、證交稅與滑價後計算績效。</span><span class="en">SMA crossover, Donchian channel and momentum, with costs deducted.</span></td>
+      <td><span class="tag">Web</span> <span class="tag local">Local</span><br><code>python -m quant_platform.cli --symbol 2330 --strategy sma --fast 20 --slow 60</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">停損與風控</span><span class="en">Stop loss and risk limits</span></td>
+      <td><span class="zh">停損、單日虧損上限、最大回撤停止。停損可在示範中試用，其餘兩項在本機設定。</span><span class="en">Stop loss, daily loss limit and max-drawdown halt. Stop loss is in the demo; the other two are local.</span></td>
+      <td><span class="tag">Web</span> <span class="tag local">Local</span><br><code>--stop-loss 0.08 --daily-loss-limit 0.03 --max-drawdown-halt 0.2</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">滾動前進驗證</span><span class="en">Walk-forward validation</span></td>
+      <td><span class="zh">參數只在訓練區間選擇，樣本外區間才評估，用來檢查是否過度擬合。</span><span class="en">Parameters are chosen on training windows only, then tested out of sample.</span></td>
+      <td><span class="tag local">Local</span><br><code>python -m quant_platform.validate_cli --csv prices.csv --fast 5,10,20 --slow 40,60,120</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">多標的投資組合</span><span class="en">Multi-asset portfolio</span></td>
+      <td><span class="zh">等權或訊號加權，可設定再平衡頻率與單一標的上限，超出上限的部分以現金持有。</span><span class="en">Equal or signal weights, with rebalancing frequency and a per-asset cap. Excess goes to cash.</span></td>
+      <td><span class="tag local">Local</span><br><code>python -m quant_platform.portfolio_cli --csv 2330=a.csv --csv 2317=b.csv --max-weight 0.25</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">績效指標</span><span class="en">Performance metrics</span></td>
+      <td><span class="zh">報酬、年化報酬、最大回撤、Sharpe、Sortino、Calmar、獲利因子，並附 Sharpe 的 95% bootstrap 區間。</span><span class="en">Returns, CAGR, max drawdown, Sharpe, Sortino, Calmar, profit factor, and a 95% bootstrap interval for Sharpe.</span></td>
+      <td><span class="tag">Web</span> <span class="tag local">Local</span><br><span class="zh">示範顯示部分指標；完整指標在本機輸出。</span><span class="en">The demo shows some metrics; the full set is local.</span></td>
+    </tr>
+    <tr>
+      <td><span class="zh">紙上交易</span><span class="en">Paper trading</span></td>
+      <td><span class="zh">只模擬下單，帳戶狀態以 JSON 檔保存，不連接任何券商。</span><span class="en">Simulated orders only. Account state is saved to a JSON file. No broker connection.</span></td>
+      <td><span class="tag local">Local</span><br><code>python -m quant_platform.paper_cli --symbol 2330.TW --state account.json --capital 1000000</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">資料來源</span><span class="en">Data sources</span></td>
+      <td><span class="zh">可從 Yahoo 或 TWSE 取得歷史價格，也能匯入自己的 CSV 檔（需要 date 與 close 欄位）。</span><span class="en">Historical prices from Yahoo or TWSE, or your own CSV with date and close columns.</span></td>
+      <td><span class="tag local">Local</span><br><code>--symbol 2330 --source twse</code> / <code>--csv my.csv</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">自訂市場設定</span><span class="en">Custom market profiles</span></td>
+      <td><span class="zh">用 JSON 定義交易日數、手續費與證交稅，不限於台股預設值。</span><span class="en">Define trading days, fees and sell tax in a JSON file.</span></td>
+      <td><span class="tag local">Local</span><br><code>--market-file my_market.json</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">HTML 報告</span><span class="en">HTML report</span></td>
+      <td><span class="zh">輸出單一 HTML 檔，不需要伺服器即可打開。範例見下方。</span><span class="en">Exports one HTML file that opens without a server. Samples are below.</span></td>
+      <td><span class="tag local">Local</span><br><code>--report report.html</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">雙語輸出</span><span class="en">Bilingual output</span></td>
+      <td><span class="zh">命令列與報告都支援繁體中文與英文。</span><span class="en">The command line and reports support Traditional Chinese and English.</span></td>
+      <td><span class="tag local">Local</span><br><code>--lang en</code> / <code>--lang zh-TW</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">帳號與稽核</span><span class="en">Accounts and audit log</span></td>
+      <td><span class="zh">管理員與一般成員兩種角色，密碼以 PBKDF2 雜湊儲存，多次失敗會暫時鎖定；建立帳號與登入事件會寫入稽核紀錄。</span><span class="en">Admin and member roles. Passwords are stored as PBKDF2 hashes with temporary lockout after repeated failures. Account and sign-in events go to the audit log.</span></td>
+      <td><span class="tag local">Local</span><br><code>python -m quant_platform.accounts_cli --db accounts.db --workspace ws create --email you@example.com</code></td>
+    </tr>
+    <tr>
+      <td><span class="zh">風險平價與因子檢驗</span><span class="en">Risk parity and factor checks</span></td>
+      <td><span class="zh">依風險貢獻計算權重（Ledoit-Wolf 收縮估計），以及動量因子的 IC 檢驗。</span><span class="en">Risk-parity weights with Ledoit-Wolf shrinkage, and momentum factor IC checks.</span></td>
+      <td><span class="tag local">Local</span><br><code>python -m quant_platform.risk_parity_cli --csv A=a.csv --csv B=b.csv</code></td>
+    </tr>
+  </table>
 
-  <h2 id="preview">範例報告 <span class="zh" style="font-size:13px;color:var(--muted)">（模擬資料）</span><span class="en hidden" style="font-size:13px;color:var(--muted)">(simulated data)</span></h2>
-  <div class="preview reveal">
-    <header>
-      <span class="zh">以模擬價格產生，展示報告格式與指標，非真實股價。</span>
-      <span class="en hidden">Generated from simulated prices to show the report format. Not real market data.</span>
-      <a class="zh" href="reports/sample-zh.html">全螢幕開啟</a>
-      <a class="en hidden" href="reports/sample-en.html">Open full screen</a>
-    </header>
-    <iframe class="zh" src="reports/sample-zh.html" title="範例報告"></iframe>
-    <iframe class="en hidden" src="reports/sample-en.html" title="Sample report"></iframe>
-  </div>
+  <h2><span class="zh">範例報告</span><span class="en">Sample reports</span><small class="zh">模擬資料</small><small class="en">simulated data</small></h2>
+  <p class="note"><span class="zh">範例以模擬價格產生，用來展示報告格式，不是真實股價。</span><span class="en">Samples use simulated prices to show the report format. They are not real market data.</span></p>
+  <p><a class="zh" href="reports/sample-zh.html">開啟範例報告（繁體中文）</a><a class="en" href="reports/sample-en.html">Open sample report (English)</a></p>
 
-  <div class="warn reveal">
-    <div class="zh">本站不提供任何投資建議、個股推薦或報酬承諾。範例使用模擬資料，不是真實股價。過去的回測結果不代表未來表現。本工具不會下單，也不保管任何資金。</div>
-    <div class="en hidden">This site gives no investment advice, stock recommendations or return promises. Examples use simulated data, not real prices. Past backtest results do not predict future performance. The tool places no orders and holds no funds.</div>
-  </div>
+  <h2><span class="zh">重要說明</span><span class="en">Important</span></h2>
+  <p class="note"><span class="zh">本站不提供投資建議、個股推薦或報酬承諾。過去的回測結果不代表未來表現。紙上交易與回測都不會實際下單。</span><span class="en">This site gives no investment advice, stock recommendations or return promises. Past backtest results do not predict future performance. Backtests and paper trading place no real orders.</span></p>
 </main>
 
-<footer>
+<footer class="wrap">
   <span class="zh">© TW Strategy Lab · 本站內容僅供教育用途。</span>
-  <span class="en hidden">© TW Strategy Lab · For educational purposes only.</span>
+  <span class="en">© TW Strategy Lab · For educational purposes only.</span>
 </footer>
-
 <script>
-(function () {
-  var btn = document.getElementById('lang');
-  var zh = true;
-  btn.addEventListener('click', function () {
-    zh = !zh;
-    document.documentElement.lang = zh ? 'zh-TW' : 'en';
-    document.querySelectorAll('.zh').forEach(function (e) { e.classList.toggle('hidden', !zh); });
-    document.querySelectorAll('.en').forEach(function (e) { e.classList.toggle('hidden', zh); });
-    btn.textContent = zh ? 'English' : '中文';
-  });
-})();
 
-(function () {
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var targets = document.querySelectorAll('.reveal');
-  if (!reduce && 'IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
-      });
-    }, { threshold: 0.15 });
-    targets.forEach(function (el) { io.observe(el); });
+var N = 750, MU = 0.0004, SIGMA = 0.015;
+var COMM = 0.001425, TAX = 0.003, SLIP = 0.0005;
+var BUY_COST = COMM + SLIP, SELL_COST = COMM + TAX + SLIP;
+
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function makePrices(seed) {
+  var rnd = mulberry32(seed), p = [100];
+  for (var t = 1; t < N; t++) {
+    var u1 = Math.max(rnd(), 1e-12), u2 = rnd();
+    var z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    p.push(p[t - 1] * Math.exp(MU + SIGMA * z));
+  }
+  return p;
+}
+
+function signals(strategy, p, a, b) {
+  var n = p.length, sig = new Array(n).fill(0), t, i;
+  if (strategy === 'sma') {
+    var slow = Math.max(b, a + 1);
+    for (t = slow - 1; t < n; t++) {
+      var sf = 0, ss = 0;
+      for (i = 0; i < slow; i++) { ss += p[t - i]; if (i < a) sf += p[t - i]; }
+      sig[t] = (sf / a > ss / slow) ? 1 : 0;
+    }
+  } else if (strategy === 'donchian') {
+    var state = 0;
+    for (t = 0; t < n; t++) {
+      if (t >= a) {
+        var hi = -Infinity;
+        for (i = t - a; i < t; i++) if (p[i] > hi) hi = p[i];
+        if (p[t] > hi) state = 1;
+      }
+      if (t >= b) {
+        var lo = Infinity;
+        for (i = t - b; i < t; i++) if (p[i] < lo) lo = p[i];
+        if (p[t] < lo) state = 0;
+      }
+      sig[t] = state;
+    }
   } else {
-    targets.forEach(function (el) { el.classList.add('in'); });
+    for (t = a; t < n; t++) sig[t] = p[t] > p[t - a] ? 1 : 0;
   }
+  return sig;
+}
 
-  function countUp(el) {
-    var end = parseInt(el.getAttribute('data-count'), 10);
-    if (reduce || isNaN(end)) return;
-    var start = performance.now(), dur = 900;
-    function tick(now) {
-      var k = Math.min((now - start) / dur, 1);
-      el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3)));
-      if (k < 1) requestAnimationFrame(tick);
-    }
-    el.textContent = '0';
-    requestAnimationFrame(tick);
+// Signal at close t trades on the next day (no look-ahead).
+// stop: exit when a close falls this fraction below the entry price (0 = off).
+// After a stop, the position stays flat until the signal turns 0 and back on.
+function backtest(p, sig, opt) {
+  var stop = (opt && opt.stop) || 0;
+  var costs = !opt || opt.costs !== false;
+  var n = p.length, eq = [1], rets = [], trades = 0, prev = 0, entry = 0, stopped = false;
+  for (var t = 1; t < n; t++) {
+    if (sig[t - 1] === 0) stopped = false;
+    var pos = (sig[t - 1] === 1 && !stopped) ? 1 : 0;
+    var r = 0;
+    if (pos === 1 && prev === 0) { entry = p[t - 1]; trades++; if (costs) r -= BUY_COST; }
+    if (pos === 1) r += p[t] / p[t - 1] - 1;
+    if (pos === 0 && prev === 1 && costs) r -= SELL_COST;
+    if (pos === 1 && stop > 0 && p[t] <= entry * (1 - stop)) stopped = true;
+    rets.push(r);
+    eq.push(eq[t - 1] * (1 + r));
+    prev = pos;
   }
-  var counters = document.querySelectorAll('[data-count]');
-  if ('IntersectionObserver' in window) {
-    var co = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { countUp(en.target); co.unobserve(en.target); }
-      });
-    }, { threshold: 0.5 });
-    counters.forEach(function (el) { co.observe(el); });
+  return { eq: eq, rets: rets, trades: trades };
+}
+
+function metrics(p, res) {
+  var eq = res.eq, rets = res.rets, n = rets.length, last = eq[eq.length - 1];
+  var years = n / 252;
+  var cagr = years > 0 && last > 0 ? Math.pow(last, 1 / years) - 1 : 0;
+  var peak = eq[0], mdd = 0, i;
+  for (i = 0; i < eq.length; i++) {
+    if (eq[i] > peak) peak = eq[i];
+    var dd = eq[i] / peak - 1;
+    if (dd < mdd) mdd = dd;
   }
-})();
+  var mean = 0; for (i = 0; i < n; i++) mean += rets[i]; mean /= n;
+  var v = 0; for (i = 0; i < n; i++) v += (rets[i] - mean) * (rets[i] - mean);
+  var sd = n > 1 ? Math.sqrt(v / (n - 1)) : 0;
+  var sharpe = sd > 0 ? mean / sd * Math.sqrt(252) : 0;
+  return { total: last - 1, cagr: cagr, mdd: mdd, sharpe: sharpe, trades: res.trades, buyHold: p[p.length - 1] / p[0] - 1 };
+}
+
 
 (function () {
-  // PURE-START
-  var N = 750, MU = 0.0004, SIGMA = 0.015;
-  var COMM = 0.001425, TAX = 0.003, SLIP = 0.0005;
-  var BUY_COST = COMM + SLIP, SELL_COST = COMM + TAX + SLIP;
-
-  function mulberry32(a) {
-    return function () {
-      a |= 0; a = a + 0x6D2B79F5 | 0;
-      var t = Math.imul(a ^ a >>> 15, 1 | a);
-      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-      return ((t ^ t >>> 14) >>> 0) / 4294967296;
-    };
-  }
-
-  function makePrices(seed) {
-    var rnd = mulberry32(seed), p = [100];
-    for (var t = 1; t < N; t++) {
-      var u1 = Math.max(rnd(), 1e-12), u2 = rnd();
-      var z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-      p.push(p[t - 1] * Math.exp(MU + SIGMA * z));
-    }
-    return p;
-  }
-
-  function signals(strategy, p, a, b) {
-    var n = p.length, sig = new Array(n).fill(0), t, i;
-    if (strategy === 'sma') {
-      var slow = Math.max(b, a + 1);
-      for (t = slow - 1; t < n; t++) {
-        var sf = 0, ss = 0;
-        for (i = 0; i < slow; i++) { ss += p[t - i]; if (i < a) sf += p[t - i]; }
-        sig[t] = (sf / a > ss / slow) ? 1 : 0;
-      }
-    } else if (strategy === 'donchian') {
-      var state = 0;
-      for (t = 0; t < n; t++) {
-        if (t >= a) {
-          var hi = -Infinity;
-          for (i = t - a; i < t; i++) if (p[i] > hi) hi = p[i];
-          if (p[t] > hi) state = 1;
-        }
-        if (t >= b) {
-          var lo = Infinity;
-          for (i = t - b; i < t; i++) if (p[i] < lo) lo = p[i];
-          if (p[t] < lo) state = 0;
-        }
-        sig[t] = state;
-      }
-    } else {
-      for (t = a; t < n; t++) sig[t] = p[t] > p[t - a] ? 1 : 0;
-    }
-    return sig;
-  }
-
-  // Signal at close t trades at the next day's return (no look-ahead).
-  function backtest(p, sig) {
-    var n = p.length, eq = [1], rets = [], trades = 0, prev = 0;
-    for (var t = 1; t < n; t++) {
-      var pos = sig[t - 1];
-      var r = pos * (p[t] / p[t - 1] - 1);
-      if (pos === 1 && prev === 0) { r -= BUY_COST; trades++; }
-      else if (pos === 0 && prev === 1) { r -= SELL_COST; }
-      rets.push(r);
-      eq.push(eq[t - 1] * (1 + r));
-      prev = pos;
-    }
-    return { eq: eq, rets: rets, trades: trades };
-  }
-
-  function metrics(p, res) {
-    var eq = res.eq, rets = res.rets, n = rets.length, last = eq[eq.length - 1];
-    var years = n / 252;
-    var cagr = years > 0 && last > 0 ? Math.pow(last, 1 / years) - 1 : 0;
-    var peak = eq[0], mdd = 0;
-    for (var i = 0; i < eq.length; i++) {
-      if (eq[i] > peak) peak = eq[i];
-      var dd = eq[i] / peak - 1;
-      if (dd < mdd) mdd = dd;
-    }
-    var mean = 0; for (i = 0; i < n; i++) mean += rets[i]; mean /= n;
-    var v = 0; for (i = 0; i < n; i++) v += (rets[i] - mean) * (rets[i] - mean);
-    var sd = n > 1 ? Math.sqrt(v / (n - 1)) : 0;
-    var sharpe = sd > 0 ? mean / sd * Math.sqrt(252) : 0;
-    return {
-      total: last - 1, cagr: cagr, mdd: mdd, sharpe: sharpe,
-      trades: res.trades, buyHold: p[p.length - 1] / p[0] - 1
-    };
-  }
-  // PURE-END
+  function bi(zh, en) { return '<span class="zh">' + zh + '</span><span class="en">' + en + '</span>'; }
+  function pct(x) { return (x * 100).toFixed(2) + '%'; }
 
   var MODES = {
     sma:      { a: [5, 60, 20],  b: [20, 200, 60], aZh: '快線天數', aEn: 'Fast window (days)', bZh: '慢線天數', bEn: 'Slow window (days)' },
@@ -361,31 +282,26 @@ html[lang="zh-TW"] .en { display: none !important; }
     momentum: { a: [5, 250, 60],  b: null,         aZh: '動量回看天數', aEn: 'Lookback (days)' }
   };
 
-  function bi(zh, en) { return '<span class="zh">' + zh + '</span><span class="en">' + en + '</span>'; }
-  function pct(x) { return (x * 100).toFixed(2) + '%'; }
-
   var stratEl = document.getElementById('pg-strategy');
-  var aEl = document.getElementById('pg-a'), bEl = document.getElementById('pg-b');
-  var aOut = document.getElementById('pg-a-out'), bOut = document.getElementById('pg-b-out');
+  var aEl = document.getElementById('pg-a'), bEl = document.getElementById('pg-b'), stopEl = document.getElementById('pg-stop');
+  var costsEl = document.getElementById('pg-costs');
+  var aOut = document.getElementById('pg-a-out'), bOut = document.getElementById('pg-b-out'), stopOut = document.getElementById('pg-stop-out');
   var aLabel = document.getElementById('pg-a-label'), bLabel = document.getElementById('pg-b-label');
   var bWrap = document.getElementById('pg-b-wrap');
   var canvas = document.getElementById('pg-chart'), ctx = canvas.getContext('2d');
   var metricsEl = document.getElementById('pg-metrics');
   var seed = 7, prices = makePrices(seed);
 
-  function setSlider(el, out, range) {
-    el.min = range[0]; el.max = range[1]; el.value = range[2];
-    out.textContent = range[2];
-  }
+  function setRange(el, out, r) { el.min = r[0]; el.max = r[1]; el.value = r[2]; out.textContent = r[2]; }
 
-  function applyMode(resetValues) {
+  function applyMode(reset) {
     var m = MODES[stratEl.value];
     aLabel.innerHTML = bi(m.aZh, m.aEn);
-    if (resetValues) setSlider(aEl, aOut, m.a); else { aEl.min = m.a[0]; aEl.max = m.a[1]; aOut.textContent = aEl.value; }
+    if (reset) setRange(aEl, aOut, m.a);
     if (m.b) {
       bWrap.classList.remove('pg-hidden');
       bLabel.innerHTML = bi(m.bZh, m.bEn);
-      if (resetValues) setSlider(bEl, bOut, m.b); else { bEl.min = m.b[0]; bEl.max = m.b[1]; bOut.textContent = bEl.value; }
+      if (reset) setRange(bEl, bOut, m.b);
     } else {
       bWrap.classList.add('pg-hidden');
     }
@@ -402,7 +318,7 @@ html[lang="zh-TW"] .en { display: none !important; }
     var hi = Math.max(Math.max.apply(null, eq), Math.max.apply(null, bh));
     var pad = (hi - lo) * 0.08 || 0.01; lo -= pad; hi += pad;
     var L = 8, R = w - 8, T = 8, B = h - 8;
-    ctx.strokeStyle = 'rgba(128,128,128,.18)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(128,128,128,.2)'; ctx.lineWidth = 1;
     for (var g = 0; g <= 4; g++) {
       var gy = T + (B - T) * g / 4;
       ctx.beginPath(); ctx.moveTo(L, gy); ctx.lineTo(R, gy); ctx.stroke();
@@ -422,10 +338,11 @@ html[lang="zh-TW"] .en { display: none !important; }
 
   function render() {
     var a = parseInt(aEl.value, 10), b = bEl.value ? parseInt(bEl.value, 10) : 0;
+    var stop = parseInt(stopEl.value, 10) / 100;
     aOut.textContent = a; bOut.textContent = b || '';
-    var strat = stratEl.value;
-    var sig = signals(strat, prices, a, b);
-    var res = backtest(prices, sig);
+    stopOut.textContent = stop > 0 ? (stop * 100).toFixed(0) + '%' : '0';
+    var sig = signals(stratEl.value, prices, a, b);
+    var res = backtest(prices, sig, { stop: stop, costs: costsEl.checked });
     var m = metrics(prices, res);
     var bh = prices.map(function (x) { return x / prices[0]; });
     draw(res.eq, bh);
@@ -443,14 +360,23 @@ html[lang="zh-TW"] .en { display: none !important; }
   stratEl.addEventListener('change', function () { applyMode(true); });
   aEl.addEventListener('input', render);
   bEl.addEventListener('input', render);
-  document.getElementById('pg-reset').addEventListener('click', function () { applyMode(true); });
+  stopEl.addEventListener('input', render);
+  costsEl.addEventListener('change', render);
+  document.getElementById('pg-reset').addEventListener('click', function () {
+    setRange(stopEl, stopOut, [0, 30, 0]); costsEl.checked = true; applyMode(true);
+  });
   document.getElementById('pg-new').addEventListener('click', function () {
     seed = Math.floor(Math.random() * 1000000) + 1;
     prices = makePrices(seed);
     render();
   });
   window.addEventListener('resize', render);
-  document.getElementById('lang').addEventListener('click', function () { setTimeout(render, 0); });
+
+  document.getElementById('lang').addEventListener('click', function () {
+    var en = document.documentElement.lang !== 'en';
+    document.documentElement.lang = en ? 'en' : 'zh-TW';
+    this.textContent = en ? '中文' : 'English';
+  });
 
   applyMode(true);
 })();
