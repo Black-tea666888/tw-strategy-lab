@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TW Strategy Lab — Research workbench for rules-based strategies</title>
-<meta name="description" content="Reproducible backtesting, portfolio and parameter research for instructors and analysts. Simulated data.">
+<meta name="description" content="Reproducible backtesting, portfolio, parameter and robustness research for instructors and analysts. Simulated data.">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;color:#1d2433;background:#fff;line-height:1.6;font-size:15px}
@@ -72,6 +72,7 @@ ul.plain li{margin:4px 0}
     <a href="#/portfolio" data-nav="portfolio">Portfolio</a>
     <a href="#/optimize" data-nav="optimize">Parameter map</a>
     <a href="#/compare" data-nav="compare">Compare</a>
+    <a href="#/robust" data-nav="robust">Robustness</a>
     <a href="#/methods" data-nav="methods">Methods</a>
   </nav>
   <div class="clock" aria-live="off"><span id="clock-time"></span><span class="tz" id="clock-tz"></span></div>
@@ -267,6 +268,39 @@ ul.plain li{margin:4px 0}
   <h2>Results</h2>
   <div class="tablewrap" style="max-height:none"><table id="c-table"></table></div>
   <p class="note">Each strategy uses its own default parameters. This compares one simulated dataset only and does not predict real-market results.</p>
+</section>
+
+<section class="page" data-page="robust">
+  <h1>Robustness across simulated datasets</h1>
+  <p class="lead">Runs one rule on many independent seeded datasets. A rule whose results are positive on only a few seeds is more likely to reflect chance.</p>
+  <div class="panel">
+    <div class="ctrl">
+      <label class="field wide">Strategy<select id="r-strategy">
+        <option value="sma">SMA crossover</option>
+        <option value="donchian">Donchian channel</option>
+        <option value="momentum">Momentum</option>
+      </select></label>
+      <label class="field"><span id="r-a-label"></span><span><input type="range" id="r-a"> <output id="r-a-out"></output></span></label>
+      <label class="field" id="r-b-wrap"><span id="r-b-label"></span><span><input type="range" id="r-b"> <output id="r-b-out"></output></span></label>
+      <label class="field">Number of seeds<select id="r-n">
+        <option value="25">25</option><option value="50" selected>50</option><option value="100">100</option>
+      </select></label>
+    </div>
+    <div class="row">
+      <label class="check"><input type="checkbox" id="r-costs" checked> Include costs</label>
+      <label class="field">Commission %<input type="number" id="r-comm" value="0.1425" step="0.0001" min="0" max="1"></label>
+      <label class="field">Sell tax %<input type="number" id="r-tax" value="0.3" step="0.01" min="0" max="1"></label>
+      <label class="field">Slippage % per side<input type="number" id="r-slip" value="0.05" step="0.01" min="0" max="1"></label>
+    </div>
+    <div class="row"><button type="button" class="primary" id="r-run">Run</button><span class="note" id="r-status"></span></div>
+  </div>
+  <h2>Summary across seeds</h2>
+  <div class="tablewrap" style="max-height:none"><table id="r-sum"></table></div>
+  <h2>Distribution of total return</h2>
+  <canvas class="small" id="r-hist"></canvas>
+  <p class="note">Each bar counts seeds whose total return falls in that range. Blue bars are positive results.</p>
+  <h2>Per-seed results</h2>
+  <div class="tablewrap"><table id="r-seeds"></table></div>
 </section>
 
 <section class="page" data-page="methods">
@@ -1093,9 +1127,62 @@ function blockReturns(rets, size) {
     $('s-seed').textContent = seed; $('p-seed').textContent = seed; $('c-seed').textContent = seed; $('o-seed').textContent = seed;
   }
 
+
+  // ---------- ROBUSTNESS PAGE ----------
+  function quantile(arr, q) {
+    var s = arr.slice().sort(function (x, y) { return x - y; });
+    var pos = (s.length - 1) * q, lo = Math.floor(pos), hi = Math.ceil(pos);
+    return s[lo] + (s[hi] - s[lo]) * (pos - lo);
+  }
+  function renderRobust() {
+    var st = $('r-strategy').value, m = MODES[st];
+    $('r-a-label').textContent = m.aL;
+    if (!$('r-a').dataset.init || $('r-strategy').dataset.last !== st) {
+      setRange($('r-a'), $('r-a-out'), m.a); $('r-a').dataset.init = '1'; $('r-strategy').dataset.last = st;
+      if (m.b) setRange($('r-b'), $('r-b-out'), m.b);
+    }
+    if (m.b) { $('r-b-wrap').classList.remove('hide'); $('r-b-label').textContent = m.bL; } else { $('r-b-wrap').classList.add('hide'); }
+    var a = parseInt($('r-a').value, 10), b = m.b ? parseInt($('r-b').value, 10) : 0;
+    $('r-a-out').textContent = a; $('r-b-out').textContent = m.b ? b : '';
+    var n = parseInt($('r-n').value, 10), cost = readCost('r-');
+    var rows = [], rets = [], sh = [], mdd = [], base = seed;
+    var stAt = new Date();
+    for (var k = 0; k < n; k++) {
+      var u = makeUniverse(base + k * 7919), p = u[0].prices;
+      var r = runSingle(p, signals(st, p, a, b), { cost: cost });
+      var mm = metricsOf(p, r);
+      rows.push({ seed: base + k * 7919, total: mm.total, sharpe: mm.sharpe, mdd: mm.mdd, trades: mm.trades });
+      rets.push(mm.total); sh.push(mm.sharpe); mdd.push(mm.mdd);
+    }
+    var pos = rets.filter(function (x) { return x > 0; }).length;
+    var med = quantile(rets, 0.5), p10 = quantile(rets, 0.1), p90 = quantile(rets, 0.9);
+    var sumDefs = [
+      ['Seeds tested', String(n)],
+      ['Share with positive total return', (pos / n * 100).toFixed(0) + '%'],
+      ['Median total return', pct(med)],
+      ['10th percentile total return', pct(p10)],
+      ['90th percentile total return', pct(p90)],
+      ['Median Sharpe', f2(quantile(sh, 0.5))],
+      ['Median max drawdown', pct(quantile(mdd, 0.5))],
+      ['Worst max drawdown', pct(Math.min.apply(null, mdd))]
+    ];
+    var html = '<thead><tr><th>Measure</th><th class="num">Value</th></tr></thead><tbody>';
+    sumDefs.forEach(function (d) { html += '<tr><td>' + d[0] + '</td><td class="num">' + d[1] + '</td></tr>'; });
+    $('r-sum').innerHTML = html + '</tbody>';
+    drawHist($('r-hist'), rets);
+    renderTable($('r-seeds'), [
+      { k: 'seed', label: 'Seed', num: true, f: String },
+      { k: 'total', label: 'Total return', num: true, f: pct },
+      { k: 'sharpe', label: 'Sharpe', num: true, f: f2 },
+      { k: 'mdd', label: 'Max drawdown', num: true, f: pct },
+      { k: 'trades', label: 'Trades', num: true, f: String }
+    ], rows, null);
+    $('r-status').textContent = 'Done: ' + n + ' seeds, ' + (new Date() - stAt) + ' ms. Symbol: SIM-01 on every seed.';
+  }
+
   function route() {
     var h = (location.hash || '#/home').replace(/^#\/?/, '') || 'home';
-    var pages = ['home', 'strategy', 'portfolio', 'optimize', 'compare', 'methods'];
+    var pages = ['home', 'strategy', 'portfolio', 'optimize', 'compare', 'robust', 'methods'];
     if (pages.indexOf(h) < 0) h = 'home';
     document.querySelectorAll('.page').forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-page') === h); });
     document.querySelectorAll('nav.main a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-nav') === h); });
@@ -1111,6 +1198,7 @@ function blockReturns(rets, size) {
     if (h === 'portfolio') renderPortfolio();
     if (h === 'optimize') renderOptimize();
     if (h === 'compare') renderCompare();
+    if (h === 'robust') renderRobust();
     window.scrollTo(0, 0);
   }
 
@@ -1122,6 +1210,8 @@ function blockReturns(rets, size) {
   }
   tickClock();
   setInterval(tickClock, 1000);
+  $('r-run').addEventListener('click', renderRobust);
+  ['r-strategy','r-a','r-b','r-n','r-costs','r-comm','r-tax','r-slip'].forEach(function (id) { $(id).addEventListener('change', renderRobust); });
   $('lang') && $('lang').remove();
   initControls();
   applyMode('s-', true);
