@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TW Strategy Lab — Backtesting and paper trading</title>
-<meta name="description" content="Browser-based backtesting, portfolio and parameter research on simulated Taiwan-style stock data.">
+<title>TW Strategy Lab — Research workbench for rules-based strategies</title>
+<meta name="description" content="Reproducible backtesting, portfolio and parameter research for instructors and analysts. Simulated data.">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;color:#1d2433;background:#fff;line-height:1.6;font-size:15px}
@@ -58,6 +58,9 @@ canvas.small{width:100%;height:160px;display:block}
 footer{border-top:1px solid #e3e7ee;margin-top:40px;padding:16px 0 28px;font-size:13px;color:#6b7385}
 ul.plain{padding-left:18px;margin:6px 0}
 ul.plain li{margin:4px 0}
+
+.clock{font-variant-numeric:tabular-nums;font-size:13px;color:#4a5365;white-space:nowrap}
+.clock .tz{color:#6b7385;margin-left:6px}
 </style>
 </head>
 <body>
@@ -71,33 +74,40 @@ ul.plain li{margin:4px 0}
     <a href="#/compare" data-nav="compare">Compare</a>
     <a href="#/methods" data-nav="methods">Methods</a>
   </nav>
+  <div class="clock" aria-live="off"><span id="clock-time"></span><span class="tz" id="clock-tz"></span></div>
 </div></header>
 
 <main class="wrap">
 
 <section class="page" data-page="home">
-  <h1>Test trading rules on history before you trust them</h1>
-  <p class="lead">A browser-based research workbench for Taiwan-style equity strategies. Run single-asset and portfolio backtests, map parameter sensitivity, test out-of-sample splits, and export results. Everything runs locally in your browser.</p>
-  <p class="note"><b>Simulated data.</b> All prices here come from a random-walk generator with set drift and volatility (SIM-01 to SIM-08). They are not real market data and do not reflect any real company.</p>
-  <p><a href="#/strategy">Open the strategy workbench →</a> &nbsp; <a href="#/portfolio">Build a portfolio →</a></p>
+  <h1>A research workbench for rules-based equity strategies</h1>
+  <p class="lead">For instructors, analysts and quantitative researchers who need transparent, reproducible backtests. Every result shows its parameters, cost assumptions, random seed and out-of-sample split, and can be exported as a standalone report.</p>
+  <p class="note"><b>Current data: simulated.</b> The workbench runs on a seeded random-walk generator (SIM-01 to SIM-08). It is not real market data. Each result is reproducible from its seed.</p>
+  <p><a href="#/strategy">Open the strategy workbench →</a> &nbsp; <a href="#/methods">Read the methods →</a></p>
+
+  <h2>Built for</h2>
+  <ul class="plain">
+    <li><b>Instructors</b> who teach systematic trading and need a transparent tool students can inspect.</li>
+    <li><b>Analysts</b> who test a rule's sensitivity before deciding whether it deserves further work.</li>
+    <li><b>Researchers</b> who need documented assumptions, out-of-sample splits and exportable records.</li>
+  </ul>
 
   <h2>What you can do</h2>
   <ul class="plain">
-    <li><b>Single-asset backtest.</b> SMA crossover, Donchian channel or momentum rules, with a trade blotter and sortable results.</li>
-    <li><b>Risk exits.</b> Stop loss, take profit and trailing stop, each set independently.</li>
-    <li><b>Out-of-sample split.</b> Choose a split point to see in-sample and out-of-sample results side by side.</li>
-    <li><b>Zoom and drawdown.</b> Drag across any chart to zoom, double-click to reset, and read the drawdown chart beneath.</li>
-    <li><b>Portfolio.</b> Choose any mix of eight simulated stocks, equal or inverse-volatility weights, rebalance frequency and a per-asset cap, with cash for the remainder.</li>
-    <li><b>Parameter map.</b> A heat map of return or Sharpe across fast and slow windows. Click a cell to open it in the workbench.</li>
-    <li><b>Costs you control.</b> Commission, sell tax and slippage are editable, and can be switched off to see their effect.</li>
-    <li><b>Downloads.</b> Equity and trade CSV files, and a standalone HTML report of the current result.</li>
+    <li><b>Single-asset backtest.</b> SMA crossover, Donchian channel and momentum rules, with a full trade blotter.</li>
+    <li><b>Risk exits.</b> Stop loss, take profit and trailing stop, set independently and shown in every trade record.</li>
+    <li><b>Out-of-sample split.</b> In-sample and out-of-sample metrics side by side, with the split marked on every chart.</li>
+    <li><b>Portfolio.</b> Eight symbols, equal or inverse-volatility weights, rebalancing, a per-symbol cap and an equal-weight benchmark.</li>
+    <li><b>Parameter map.</b> Return or Sharpe across fast and slow windows, to test whether a result depends on one narrow setting.</li>
+    <li><b>Costs you control.</b> Commission, sell tax and slippage are editable, and can be switched off to isolate their effect.</li>
+    <li><b>Reproducible exports.</b> Equity and trade CSV files, and an HTML report that records parameters, costs and the data disclosure.</li>
   </ul>
 
-  <h2>What this is not</h2>
+  <h2>Not included yet</h2>
   <ul class="plain">
-    <li>Not investment advice, and not a recommendation of any stock or strategy.</li>
-    <li>No live prices, no broker connection, and no orders are placed.</li>
-    <li>Past backtest results do not predict future performance.</li>
+    <li>Real market data. Connecting licensed Taiwan market data is the planned next step.</li>
+    <li>Live trading, brokerage connections or order routing. The workbench does not place orders.</li>
+    <li>Investment advice, stock recommendations or return forecasts.</li>
   </ul>
 </section>
 
@@ -261,6 +271,12 @@ ul.plain li{margin:4px 0}
 
 <section class="page" data-page="methods">
   <h1>Methods and assumptions</h1>
+  <p class="lead">Every number on this site follows the rules below. If a rule is not listed here, the workbench does not apply it.</p>
+  <h2>Data</h2>
+  <ul class="plain">
+    <li>All prices are simulated. Each dataset comes from a seed, so the same seed and parameters always reproduce the same result.</li>
+    <li>The seed is shown on every page and written into every HTML report.</li>
+  </ul>
   <h2>How trades are timed</h2>
   <ul class="plain">
     <li>Signals use closing prices. A signal at the close of day t opens or closes a position on day t+1. There is no look-ahead.</li>
@@ -307,7 +323,7 @@ ul.plain li{margin:4px 0}
   <span>© TW Strategy Lab · Simulated data for educational research only. Not investment advice.</span>
 </footer>
 <script>
-
+// ENGINE-START
 var N = 750;
 var UNIVERSE = [
   { id: 'SIM-01', mu: 0.0006, sig: 0.012 }, { id: 'SIM-02', mu: 0.0003, sig: 0.018 },
@@ -552,7 +568,7 @@ function blockReturns(rets, size) {
   }
   return out;
 }
-
+// ENGINE-END
 
 (function () {
   function $(id) { return document.getElementById(id); }
@@ -1014,6 +1030,7 @@ function blockReturns(rets, size) {
     var html = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Backtest report (simulated data)</title>' +
       '<style>body{font-family:-apple-system,Arial,sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#1d2433}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid #e3e7ee;padding:6px;text-align:right}th:first-child,td:first-child{text-align:left}</style></head><body>' +
       '<h1>Backtest report (simulated data)</h1>' +
+      '<p>Data seed: ' + seed + ' · Costs: ' + (S.cost ? 'commission ' + (S.cost.comm*100).toFixed(4) + '%, sell tax ' + (S.cost.tax*100).toFixed(2) + '%, slippage ' + (S.cost.slip*100).toFixed(2) + '% per side' : 'off') + ' · Out-of-sample split: ' + (S.cut !== null ? 'from day ' + S.cut : 'off') + '</p>' +
       '<p>Symbol: ' + S.sym + ' · Strategy: ' + STRAT_NAMES[S.P.st] + ' · Parameters: ' + (S.P.st === 'momentum' ? 'lookback ' + S.P.a : 'A ' + S.P.a + ', B ' + S.P.b) + ' · Stop ' + (S.stop * 100) + '% · Take profit ' + (S.tp * 100) + '% · Trailing stop ' + (S.trail * 100) + '%</p>' +
       '<table><tr><th>Total return</th><th>CAGR</th><th>Max drawdown</th><th>Sharpe</th><th>Trades</th><th>Buy &amp; hold</th></tr><tr><td>' + pct(m.total) + '</td><td>' + pct(m.cagr) + '</td><td>' + pct(m.mdd) + '</td><td>' + f2(m.sharpe) + '</td><td>' + m.trades + '</td><td>' + pct(m.buyHold) + '</td></tr></table>' +
       '<h2>Equity</h2><svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="border:1px solid #e3e7ee"><polyline fill="none" stroke="#8a94a6" stroke-width="2" points="' + poly(bh) + '"/><polyline fill="none" stroke="#1f6feb" stroke-width="2" points="' + poly(S.res.eq) + '"/></svg>' +
@@ -1097,6 +1114,14 @@ function blockReturns(rets, size) {
     window.scrollTo(0, 0);
   }
 
+  function tickClock() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    $('clock-time').textContent = p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+    var off = -d.getTimezoneOffset(), sign = off >= 0 ? '+' : '-', a = Math.abs(off);
+    $('clock-tz').textContent = 'UTC' + sign + p(Math.floor(a / 60)) + ':' + p(a % 60);
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
   $('lang') && $('lang').remove();
   initControls();
   applyMode('s-', true);
