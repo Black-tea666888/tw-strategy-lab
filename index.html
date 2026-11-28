@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TW Strategy Lab — 量化回測與紙上交易 / Backtesting &amp; paper trading</title>
-<meta name="description" content="免費開源的台股回測與紙上交易工具。Free, open-source backtesting and paper trading for Taiwan stocks.">
+<title>TW Strategy Lab — Backtesting and paper trading</title>
+<meta name="description" content="A free, open-source backtesting and paper-trading tool for Taiwan stocks.">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;color:#1d2433;background:#fff;line-height:1.6;font-size:15px}
@@ -65,143 +65,131 @@ html[lang="zh-TW"] .en{display:none!important}
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <a class="brand" href="#/home">TW Strategy Lab</a>
-  <nav class="main">
-    <a href="#/home" data-nav="home"><span class="zh">首頁</span><span class="en">Home</span></a>
-    <a href="#/try" data-nav="try"><span class="zh">回測工作台</span><span class="en">Backtest</span></a>
-    <a href="#/compare" data-nav="compare"><span class="zh">策略比較</span><span class="en">Compare</span></a>
-    <a href="#/metrics" data-nav="metrics"><span class="zh">指標說明</span><span class="en">Metrics</span></a>
-  </nav>
-  <button id="lang" type="button">English</button>
+<a class="brand" href="#/home">TW Strategy Lab</a>
+<nav class="main">
+<a data-nav="home" href="#/home">Home</a>
+<a data-nav="try" href="#/try">Backtest</a>
+<a data-nav="compare" href="#/compare">Compare</a>
+<a data-nav="metrics" href="#/metrics">Metrics</a>
+</nav>
+
 </div></header>
-
 <main class="wrap">
-
 <section class="page" data-page="home">
-  <h1><span class="zh">用歷史資料檢查策略</span><span class="en">Check a strategy against history</span></h1>
-  <p class="lead"><span class="zh">免費、開源的台股回測與紙上交易工具。這個網頁可以直接試用回測工作台、策略比較與指標說明；完整功能需要在自己的電腦執行。本工具不下單，也不保管資金。</span><span class="en">A free, open-source backtesting and paper-trading tool for Taiwan stocks. This page lets you try the backtest workbench, strategy comparison and metric definitions. The full feature set runs on your own computer. The tool places no orders and holds no funds.</span></p>
-  <p><a href="#/try"><span class="zh">開始回測 →</span><span class="en">Start a backtest →</span></a></p>
-
-  <h2><span class="zh">功能與用法</span><span class="en">Features and usage</span></h2>
-  <p class="note"><span class="zh"><span class="tag">網頁</span>可以在這個頁面操作　<span class="tag local">本機</span>要在自己的電腦執行指令</span><span class="en"><span class="tag">Web</span>try it on this page　<span class="tag local">Local</span>run the command on your computer</span></p>
-  <table>
-    <tr><th><span class="zh">功能</span><span class="en">Feature</span></th><th><span class="zh">說明</span><span class="en">What it does</span></th><th><span class="zh">在哪裡用</span><span class="en">Where</span></th></tr>
-    <tr><td><span class="zh">單一標的回測</span><span class="en">Single-asset backtest</span></td><td><span class="zh">SMA 交叉、唐奇安通道、動量三種策略，扣除手續費、證交稅與滑價後計算績效。</span><span class="en">SMA crossover, Donchian channel and momentum, with costs deducted.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span><br><code>python -m quant_platform.cli --symbol 2330 --strategy sma --fast 20 --slow 60</code></td></tr>
-    <tr><td><span class="zh">交易明細與參數掃描</span><span class="en">Trade blotter and parameter sweep</span></td><td><span class="zh">逐筆列出進出場、單筆報酬與停損出場；對多組參數比較績效，表頭可排序。</span><span class="en">Each trade with entry, exit and return, plus a sortable sweep across parameter values.</span></td><td><span class="tag">網頁</span></td></tr>
-    <tr><td><span class="zh">停損與風控</span><span class="en">Stop loss and risk limits</span></td><td><span class="zh">停損、單日虧損上限、最大回撤停止。停損可在網頁試用，其餘兩項在本機設定。</span><span class="en">Stop loss, daily loss limit and max-drawdown halt. Stop loss is on this page; the other two are local.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span><br><code>--stop-loss 0.08 --daily-loss-limit 0.03 --max-drawdown-halt 0.2</code></td></tr>
-    <tr><td><span class="zh">滾動前進驗證</span><span class="en">Walk-forward validation</span></td><td><span class="zh">參數只在訓練區間選擇，樣本外區間才評估，用來檢查是否過度擬合。</span><span class="en">Parameters are chosen on training windows only, then tested out of sample.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.validate_cli --csv prices.csv --fast 5,10,20 --slow 40,60,120</code></td></tr>
-    <tr><td><span class="zh">多標的投資組合</span><span class="en">Multi-asset portfolio</span></td><td><span class="zh">等權或訊號加權，可設定再平衡頻率與單一標的上限，超出上限的部分以現金持有。</span><span class="en">Equal or signal weights, with rebalancing frequency and a per-asset cap. Excess goes to cash.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.portfolio_cli --csv 2330=a.csv --csv 2317=b.csv --max-weight 0.25</code></td></tr>
-    <tr><td><span class="zh">績效指標</span><span class="en">Performance metrics</span></td><td><span class="zh">報酬、年化報酬、最大回撤、Sharpe、Sortino、Calmar、獲利因子與 Sharpe 的 95% bootstrap 區間。網頁顯示其中一部分。</span><span class="en">Returns, CAGR, max drawdown, Sharpe, Sortino, Calmar, profit factor and a 95% bootstrap interval for Sharpe. This page shows a subset.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span></td></tr>
-    <tr><td><span class="zh">紙上交易</span><span class="en">Paper trading</span></td><td><span class="zh">只模擬下單，帳戶狀態以 JSON 檔保存，不連接任何券商。</span><span class="en">Simulated orders only. Account state is saved to a JSON file. No broker connection.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.paper_cli --symbol 2330.TW --state account.json --capital 1000000</code></td></tr>
-    <tr><td><span class="zh">資料來源</span><span class="en">Data sources</span></td><td><span class="zh">可從 Yahoo 或 TWSE 取得歷史價格，也能匯入自己的 CSV（需要 date 與 close 欄位）。</span><span class="en">Historical prices from Yahoo or TWSE, or your own CSV with date and close columns.</span></td><td><span class="tag local">本機</span><br><code>--symbol 2330 --source twse</code> / <code>--csv my.csv</code></td></tr>
-    <tr><td><span class="zh">自訂市場設定</span><span class="en">Custom market profiles</span></td><td><span class="zh">用 JSON 定義交易日數、手續費與證交稅，不限於台股預設值。</span><span class="en">Define trading days, fees and sell tax in a JSON file.</span></td><td><span class="tag local">本機</span><br><code>--market-file my_market.json</code></td></tr>
-    <tr><td><span class="zh">HTML 報告</span><span class="en">HTML report</span></td><td><span class="zh">輸出單一 HTML 檔，不需要伺服器即可打開。網頁上也能下載目前結果的報告。</span><span class="en">One HTML file that opens without a server. You can also download a report of the current result here.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span><br><code>--report report.html</code></td></tr>
-    <tr><td><span class="zh">雙語輸出</span><span class="en">Bilingual output</span></td><td><span class="zh">命令列與報告都支援繁體中文與英文。</span><span class="en">The command line and reports support Traditional Chinese and English.</span></td><td><span class="tag local">本機</span><br><code>--lang en</code> / <code>--lang zh-TW</code></td></tr>
-    <tr><td><span class="zh">帳號與稽核</span><span class="en">Accounts and audit log</span></td><td><span class="zh">管理員與一般成員兩種角色，密碼以 PBKDF2 雜湊儲存，多次失敗會暫時鎖定；建立帳號與登入事件會寫入稽核紀錄。</span><span class="en">Admin and member roles. Passwords are stored as PBKDF2 hashes with temporary lockout after repeated failures. Account and sign-in events go to the audit log.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.accounts_cli --db accounts.db --workspace ws create --email you@example.com</code></td></tr>
-    <tr><td><span class="zh">風險平價與因子檢驗</span><span class="en">Risk parity and factor checks</span></td><td><span class="zh">依風險貢獻計算權重（Ledoit-Wolf 收縮估計），以及動量因子的 IC 檢驗。</span><span class="en">Risk-parity weights with Ledoit-Wolf shrinkage, and momentum factor IC checks.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.risk_parity_cli --csv A=a.csv --csv B=b.csv</code></td></tr>
-  </table>
-
-  <h2><span class="zh">範例報告</span><span class="en">Sample reports</span><small class="sub"><span class="zh">模擬資料</span><span class="en">simulated data</span></small></h2>
-  <p class="note"><span class="zh">範例以模擬價格產生，用來展示報告格式，不是真實股價。</span><span class="en">Samples use simulated prices to show the report format. They are not real market data.</span></p>
-  <p><a href="reports/sample-zh.html"><span class="zh">開啟範例報告（繁體中文）</span></a><a href="reports/sample-en.html"><span class="en">Open sample report (English)</span></a></p>
-
-  <h2><span class="zh">重要說明</span><span class="en">Important</span></h2>
-  <p class="note"><span class="zh">本站不提供投資建議、個股推薦或報酬承諾。過去的回測結果不代表未來表現。回測與紙上交易都不會實際下單。</span><span class="en">This site gives no investment advice, stock recommendations or return promises. Past backtest results do not predict future performance. Backtests and paper trading place no real orders.</span></p>
+<h1>Check a strategy against history</h1>
+<p class="lead">A free, open-source backtesting and paper-trading tool for Taiwan stocks. This page lets you try the backtest workbench, strategy comparison and metric definitions. The full feature set runs on your own computer. The tool places no orders and holds no funds.</p>
+<p><a href="#/try">Start a backtest →</a></p>
+<h2>Features and usage</h2>
+<p class="note"><span class="tag">Web</span>try it on this page　<span class="tag local">Local</span>run the command on your computer</p>
+<table>
+<tr><th>Feature</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Single-asset backtest</td><td>SMA crossover, Donchian channel and momentum, with costs deducted.</td><td><span class="tag">Web</span><span class="tag local">Local</span><br/><code>python -m quant_platform.cli --symbol 2330 --strategy sma --fast 20 --slow 60</code></td></tr>
+<tr><td>Trade blotter and parameter sweep</td><td>Each trade with entry, exit and return, plus a sortable sweep across parameter values.</td><td><span class="tag">Web</span></td></tr>
+<tr><td>Stop loss and risk limits</td><td>Stop loss, daily loss limit and max-drawdown halt. Stop loss is on this page; the other two are local.</td><td><span class="tag">Web</span><span class="tag local">Local</span><br/><code>--stop-loss 0.08 --daily-loss-limit 0.03 --max-drawdown-halt 0.2</code></td></tr>
+<tr><td>Walk-forward validation</td><td>Parameters are chosen on training windows only, then tested out of sample.</td><td><span class="tag local">Local</span><br/><code>python -m quant_platform.validate_cli --csv prices.csv --fast 5,10,20 --slow 40,60,120</code></td></tr>
+<tr><td>Multi-asset portfolio</td><td>Equal or signal weights, with rebalancing frequency and a per-asset cap. Excess goes to cash.</td><td><span class="tag local">Local</span><br/><code>python -m quant_platform.portfolio_cli --csv 2330=a.csv --csv 2317=b.csv --max-weight 0.25</code></td></tr>
+<tr><td>Performance metrics</td><td>Returns, CAGR, max drawdown, Sharpe, Sortino, Calmar, profit factor and a 95% bootstrap interval for Sharpe. This page shows a subset.</td><td><span class="tag">Web</span><span class="tag local">Local</span></td></tr>
+<tr><td>Paper trading</td><td>Simulated orders only. Account state is saved to a JSON file. No broker connection.</td><td><span class="tag local">Local</span><br/><code>python -m quant_platform.paper_cli --symbol 2330.TW --state account.json --capital 1000000</code></td></tr>
+<tr><td>Data sources</td><td>Historical prices from Yahoo or TWSE, or your own CSV with date and close columns.</td><td><span class="tag local">Local</span><br/><code>--symbol 2330 --source twse</code> / <code>--csv my.csv</code></td></tr>
+<tr><td>Custom market profiles</td><td>Define trading days, fees and sell tax in a JSON file.</td><td><span class="tag local">Local</span><br/><code>--market-file my_market.json</code></td></tr>
+<tr><td>HTML report</td><td>One HTML file that opens without a server. You can also download a report of the current result here.</td><td><span class="tag">Web</span><span class="tag local">Local</span><br/><code>--report report.html</code></td></tr>
+<tr><td>Bilingual output</td><td>The command line and reports support Traditional Chinese and English.</td><td><span class="tag local">Local</span><br/><code>--lang en</code> / <code>--lang zh-TW</code></td></tr>
+<tr><td>Accounts and audit log</td><td>Admin and member roles. Passwords are stored as PBKDF2 hashes with temporary lockout after repeated failures. Account and sign-in events go to the audit log.</td><td><span class="tag local">Local</span><br/><code>python -m quant_platform.accounts_cli --db accounts.db --workspace ws create --email you@example.com</code></td></tr>
+<tr><td>Risk parity and factor checks</td><td>Risk-parity weights with Ledoit-Wolf shrinkage, and momentum factor IC checks.</td><td><span class="tag local">Local</span><br/><code>python -m quant_platform.risk_parity_cli --csv A=a.csv --csv B=b.csv</code></td></tr>
+</table>
+<h2>Sample reports<small class="sub">simulated data</small></h2>
+<p class="note">Samples use simulated prices to show the report format. They are not real market data.</p>
+<p><a href="reports/sample-en.html">Open sample report (English)</a></p>
+<h2>Important</h2>
+<p class="note">This site gives no investment advice, stock recommendations or return promises. Past backtest results do not predict future performance. Backtests and paper trading place no real orders.</p>
 </section>
-
 <section class="page" data-page="try">
-  <h1><span class="zh">回測工作台</span><span class="en">Backtest workbench</span></h1>
-  <p class="note"><span class="zh">模擬資料，在瀏覽器內計算，不連網。</span><span class="en">Simulated data, computed in your browser. No network.</span></p>
-  <div class="panel">
-    <div class="ctrl">
-      <label class="field"><span class="zh">策略</span><span class="en">Strategy</span>
-        <select id="t-strategy">
-          <option value="sma">SMA 均線交叉 / SMA crossover</option>
-          <option value="donchian">唐奇安通道 / Donchian channel</option>
-          <option value="momentum">動量 / Momentum</option>
-        </select></label>
-      <label class="field"><span id="t-a-label"></span>
-        <span><input type="range" id="t-a"> <output id="t-a-out"></output></span></label>
-      <label class="field" id="t-b-wrap"><span id="t-b-label"></span>
-        <span><input type="range" id="t-b"> <output id="t-b-out"></output></span></label>
-      <label class="field"><span class="zh">回測期間</span><span class="en">Period</span>
-        <select id="t-range">
-          <option value="0">全部 / All</option>
-          <option value="252">最近一年 / Last 1 year</option>
-          <option value="504">最近兩年 / Last 2 years</option>
-        </select></label>
-      <label class="field"><span class="zh">停損（0 = 關閉）</span><span class="en">Stop loss (0 = off)</span>
-        <span><input type="range" id="t-stop" min="0" max="30" step="1" value="0"> <output id="t-stop-out"></output></span></label>
-    </div>
-    <div class="row">
-      <label class="check"><input type="checkbox" id="t-costs" checked>
-        <span class="zh">計入手續費、證交稅與滑價</span><span class="en">Include commission, sell tax and slippage</span></label>
-    </div>
-    <div class="row">
-      <button type="button" class="primary" id="t-new"><span class="zh">換一組模擬資料</span><span class="en">New simulated data</span></button>
-      <button type="button" id="t-reset"><span class="zh">還原預設參數</span><span class="en">Reset parameters</span></button>
-      <button type="button" id="dl-equity"><span class="zh">下載淨值 CSV</span><span class="en">Download equity CSV</span></button>
-      <button type="button" id="dl-trades"><span class="zh">下載交易 CSV</span><span class="en">Download trades CSV</span></button>
-      <button type="button" id="dl-report"><span class="zh">下載 HTML 報告</span><span class="en">Download HTML report</span></button>
-    </div>
-    <div class="chartbox">
-      <canvas class="chart" id="t-chart" aria-label="equity curve"></canvas>
-      <div class="tip" id="t-tip"></div>
-    </div>
-    <div class="legend">
-      <span><i style="background:#1f6feb"></i><span class="zh">策略淨值</span><span class="en">Strategy equity</span></span>
-      <span><i style="background:#8a94a6"></i><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></span>
-      <span class="note"><span class="zh">滑鼠移到圖上可查看每一天的數值</span><span class="en">Hover over the chart to read each day</span></span>
-    </div>
-    <div class="kpis" id="t-kpis"></div>
-  </div>
-
-  <h2><span class="zh">交易明細</span><span class="en">Trade blotter</span><small class="sub" id="t-trade-count"></small></h2>
-  <p class="note"><span class="zh">單筆報酬為進出場價格變動，已扣除成本的概算。點表頭可排序。</span><span class="en">Trade return is the price move between entry and exit, net of costs (approximate). Click a header to sort.</span></p>
-  <div class="tablewrap"><table id="t-trades"></table></div>
-
-  <h2><span class="zh">參數掃描</span><span class="en">Parameter sweep</span></h2>
-  <p class="note"><span class="zh">固定其他參數，只改變策略的主要參數，比較績效。目前使用的參數以淡藍色標示。點表頭可排序。</span><span class="en">Vary the main parameter and keep the rest fixed. The current setting is highlighted. Click a header to sort.</span></p>
-  <div class="tablewrap"><table id="t-sweep"></table></div>
+<h1>Backtest workbench</h1>
+<p class="note">Simulated data, computed in your browser. No network.</p>
+<div class="panel">
+<div class="ctrl">
+<label class="field">Strategy
+<select id="t-strategy">
+<option value="sma">SMA crossover</option>
+<option value="donchian">Donchian channel</option>
+<option value="momentum">Momentum</option>
+</select></label>
+<label class="field"><span id="t-a-label"></span>
+<span><input id="t-a" type="range"/> <output id="t-a-out"></output></span></label>
+<label class="field" id="t-b-wrap"><span id="t-b-label"></span>
+<span><input id="t-b" type="range"/> <output id="t-b-out"></output></span></label>
+<label class="field">Period
+<select id="t-range">
+<option value="0">All</option>
+<option value="252">Last 1 year</option>
+<option value="504">Last 2 years</option>
+</select></label>
+<label class="field">Stop loss (0 = off)
+<span><input id="t-stop" max="30" min="0" step="1" type="range" value="0"/> <output id="t-stop-out"></output></span></label>
+</div>
+<div class="row">
+<label class="check"><input checked="" id="t-costs" type="checkbox"/>
+Include commission, sell tax and slippage</label>
+</div>
+<div class="row">
+<button class="primary" id="t-new" type="button">New simulated data</button>
+<button id="t-reset" type="button">Reset parameters</button>
+<button id="dl-equity" type="button">Download equity CSV</button>
+<button id="dl-trades" type="button">Download trades CSV</button>
+<button id="dl-report" type="button">Download HTML report</button>
+</div>
+<div class="chartbox">
+<canvas aria-label="equity curve" class="chart" id="t-chart"></canvas>
+<div class="tip" id="t-tip"></div>
+</div>
+<div class="legend">
+<span><i style="background:#1f6feb"></i>Strategy equity</span>
+<span><i style="background:#8a94a6"></i>Buy &amp; hold</span>
+<span class="note">Hover over the chart to read each day</span>
+</div>
+<div class="kpis" id="t-kpis"></div>
+</div>
+<h2>Trade blotter<small class="sub" id="t-trade-count"></small></h2>
+<p class="note">Trade return is the price move between entry and exit, net of costs (approximate). Click a header to sort.</p>
+<div class="tablewrap"><table id="t-trades"></table></div>
+<h2>Parameter sweep</h2>
+<p class="note">Vary the main parameter and keep the rest fixed. The current setting is highlighted. Click a header to sort.</p>
+<div class="tablewrap"><table id="t-sweep"></table></div>
 </section>
-
 <section class="page" data-page="compare">
-  <h1><span class="zh">策略比較</span><span class="en">Strategy comparison</span></h1>
-  <p class="note"><span class="zh">三種策略使用同一組模擬資料與預設參數。資料與回測工作台共用，換資料時兩邊都會更新。</span><span class="en">All three strategies use the same simulated data and default parameters. Data is shared with the workbench.</span></p>
-  <div class="panel">
-    <div class="chartbox"><canvas class="chart" id="c-chart" aria-label="comparison"></canvas></div>
-    <div class="legend">
-      <span><i style="background:#1f6feb"></i>SMA</span>
-      <span><i style="background:#d9822b"></i><span class="zh">唐奇安</span><span class="en">Donchian</span></span>
-      <span><i style="background:#2da44e"></i><span class="zh">動量</span><span class="en">Momentum</span></span>
-      <span><i style="background:#8a94a6"></i><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></span>
-    </div>
-  </div>
-  <div class="tablewrap" style="max-height:none"><table id="c-table"></table></div>
-  <p class="note"><span class="zh">注意：三種策略的預設參數不同，比較只說明在這組模擬資料上的結果，不代表任何策略在真實市場的表現。</span><span class="en">Each strategy uses its own default parameters. This compares results on one simulated dataset only and does not predict real-market performance.</span></p>
+<h1>Strategy comparison</h1>
+<p class="note">All three strategies use the same simulated data and default parameters. Data is shared with the workbench.</p>
+<div class="panel">
+<div class="chartbox"><canvas aria-label="comparison" class="chart" id="c-chart"></canvas></div>
+<div class="legend">
+<span><i style="background:#1f6feb"></i>SMA</span>
+<span><i style="background:#d9822b"></i>Donchian</span>
+<span><i style="background:#2da44e"></i>Momentum</span>
+<span><i style="background:#8a94a6"></i>Buy &amp; hold</span>
+</div>
+</div>
+<div class="tablewrap" style="max-height:none"><table id="c-table"></table></div>
+<p class="note">Each strategy uses its own default parameters. This compares results on one simulated dataset only and does not predict real-market performance.</p>
 </section>
-
 <section class="page" data-page="metrics">
-  <h1><span class="zh">指標說明</span><span class="en">Metric definitions</span></h1>
-  <table>
-    <tr><th><span class="zh">指標</span><span class="en">Metric</span></th><th><span class="zh">定義</span><span class="en">Definition</span></th></tr>
-    <tr><td><span class="zh">總報酬</span><span class="en">Total return</span></td><td><span class="zh">期末淨值減 1，已扣除成本。</span><span class="en">Final equity minus 1, net of costs.</span></td></tr>
-    <tr><td><span class="zh">年化報酬（CAGR）</span><span class="en">CAGR</span></td><td><span class="zh">以 252 個交易日為一年，把總報酬換算成每年複利。</span><span class="en">Total growth compounded per year, using 252 trading days per year.</span></td></tr>
-    <tr><td><span class="zh">最大回撤</span><span class="en">Max drawdown</span></td><td><span class="zh">淨值從歷史高點下跌的最大幅度。</span><span class="en">The largest fall of equity from a prior peak.</span></td></tr>
-    <tr><td>Sharpe</td><td><span class="zh">每日報酬的平均值除以標準差，再乘上 √252。假設無風險利率為 0。</span><span class="en">Mean daily return over its standard deviation, times √252. Risk-free rate assumed zero.</span></td></tr>
-    <tr><td>Sortino</td><td><span class="zh">類似 Sharpe，但分母只用下跌的波動。</span><span class="en">Like Sharpe, but the denominator uses only downside volatility.</span></td></tr>
-    <tr><td>Calmar</td><td><span class="zh">年化報酬除以最大回撤的絕對值。</span><span class="en">CAGR divided by the absolute max drawdown.</span></td></tr>
-    <tr><td><span class="zh">獲利因子</span><span class="en">Profit factor</span></td><td><span class="zh">獲利交易的總獲利除以虧損交易的總虧損。</span><span class="en">Total gains of winning trades divided by total losses of losing trades.</span></td></tr>
-    <tr><td><span class="zh">進場次數</span><span class="en">Entries</span></td><td><span class="zh">策略建立部位的次數（含期末仍持有的部位）。</span><span class="en">How many times the strategy opened a position, including one still open at the end.</span></td></tr>
-    <tr><td><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></td><td><span class="zh">第一天買進並持有到期末的總報酬，作為基準。</span><span class="en">Total return of buying on day one and holding to the end. Used as a benchmark.</span></td></tr>
-  </table>
+<h1>Metric definitions</h1>
+<table>
+<tr><th>Metric</th><th>Definition</th></tr>
+<tr><td>Total return</td><td>Final equity minus 1, net of costs.</td></tr>
+<tr><td>CAGR</td><td>Total growth compounded per year, using 252 trading days per year.</td></tr>
+<tr><td>Max drawdown</td><td>The largest fall of equity from a prior peak.</td></tr>
+<tr><td>Sharpe</td><td>Mean daily return over its standard deviation, times √252. Risk-free rate assumed zero.</td></tr>
+<tr><td>Sortino</td><td>Like Sharpe, but the denominator uses only downside volatility.</td></tr>
+<tr><td>Calmar</td><td>CAGR divided by the absolute max drawdown.</td></tr>
+<tr><td>Profit factor</td><td>Total gains of winning trades divided by total losses of losing trades.</td></tr>
+<tr><td>Entries</td><td>How many times the strategy opened a position, including one still open at the end.</td></tr>
+<tr><td>Buy &amp; hold</td><td>Total return of buying on day one and holding to the end. Used as a benchmark.</td></tr>
+</table>
 </section>
-
 </main>
-
 <footer class="wrap">
-  <span class="zh">© TW Strategy Lab · 本站內容僅供教育用途，不構成投資建議。</span>
-  <span class="en">© TW Strategy Lab · For educational purposes only. Not investment advice.</span>
+
+© TW Strategy Lab · For educational purposes only. Not investment advice.
 </footer>
 <script>
 
@@ -335,19 +323,18 @@ function sweep(strategy, p, b, opt) {
 
 (function () {
   function $(id) { return document.getElementById(id); }
-  function bi(zh, en) { return '<span class="zh">' + zh + '</span><span class="en">' + en + '</span>'; }
-  function pct(x) { return (x * 100).toFixed(2) + '%'; }
+    function pct(x) { return (x * 100).toFixed(2) + '%'; }
   function f2(x) { return x.toFixed(2); }
   function f4(x) { return x.toFixed(4); }
 
   var COLORS = { sma: '#1f6feb', donchian: '#d9822b', momentum: '#2da44e', bh: '#8a94a6' };
   var MODES = {
-    sma:      { a: [5, 60, 20],  b: [20, 200, 60], aZh: '快線天數', aEn: 'Fast window (days)', bZh: '慢線天數', bEn: 'Slow window (days)' },
-    donchian: { a: [10, 120, 55], b: [5, 60, 20],  aZh: '進場回看天數', aEn: 'Entry lookback (days)', bZh: '出場回看天數', bEn: 'Exit lookback (days)' },
-    momentum: { a: [5, 250, 60],  b: null,         aZh: '動量回看天數', aEn: 'Lookback (days)' }
+    sma:      { a: [5, 60, 20],  b: [20, 200, 60], aEn: 'Fast window (days)', bEn: 'Slow window (days)' },
+    donchian: { a: [10, 120, 55], b: [5, 60, 20],  aEn: 'Entry lookback (days)', bEn: 'Exit lookback (days)' },
+    momentum: { a: [5, 250, 60],  b: null,         aEn: 'Lookback (days)' }
   };
   var DEFAULTS = { sma: { a: 20, b: 60 }, donchian: { a: 55, b: 20 }, momentum: { a: 60, b: 0 } };
-  var NAMES = { sma: ['SMA 均線交叉', 'SMA crossover'], donchian: ['唐奇安通道', 'Donchian channel'], momentum: ['動量', 'Momentum'] };
+  var NAMES = { sma: ['SMA crossover', 'SMA crossover'], donchian: ['Donchian channel', 'Donchian channel'], momentum: ['Momentum', 'Momentum'] };
   var seed = 7, prices = makePrices(seed);
   var hoverIdx = -1, last = null;
 
@@ -412,10 +399,10 @@ function sweep(strategy, p, b, opt) {
     var h = '<thead><tr>';
     cols.forEach(function (c) {
       var arrow = st.k === c.k ? (st.dir > 0 ? ' ▲' : ' ▼') : '';
-      h += '<th class="sortable' + (c.num ? ' num' : '') + '" data-k="' + c.k + '">' + bi(c.zh, c.en) + arrow + '</th>';
+      h += '<th class="sortable' + (c.num ? ' num' : '') + '" data-k="' + c.k + '">' + c.en + arrow + '</th>';
     });
     h += '</tr></thead><tbody>';
-    if (!data.length) h += '<tr><td colspan="' + cols.length + '">' + bi('沒有資料', 'No data') + '</td></tr>';
+    if (!data.length) h += '<tr><td colspan="' + cols.length + '">' + 'No data' + '</td></tr>';
     data.forEach(function (r) {
       h += '<tr' + (hl && hl(r) ? ' class="hl"' : '') + '>';
       cols.forEach(function (c) {
@@ -443,11 +430,11 @@ function sweep(strategy, p, b, opt) {
   function setRange(el, out, r) { el.min = r[0]; el.max = r[1]; el.value = r[2]; out.textContent = r[2]; }
   function applyMode(reset) {
     var m = MODES[stratEl.value];
-    aLabel.innerHTML = bi(m.aZh, m.aEn);
+    aLabel.innerHTML = m.aEn;
     if (reset) setRange(aEl, aOut, m.a); else { aEl.min = m.a[0]; aEl.max = m.a[1]; }
     if (m.b) {
       bWrap.classList.remove('hide');
-      bLabel.innerHTML = bi(m.bZh, m.bEn);
+      bLabel.innerHTML = m.bEn;
       if (reset) setRange(bEl, bOut, m.b);
     } else {
       bWrap.classList.add('hide');
@@ -466,9 +453,9 @@ function sweep(strategy, p, b, opt) {
 
   // ---------- workbench ----------
   function statusOf(t) {
-    if (t.open) return { k: 'open', html: bi('持有中', 'Open') };
-    if (t.stopped) return { k: 'stop', html: bi('停損出場', 'Stop exit') };
-    return { k: 'signal', html: bi('訊號出場', 'Signal exit') };
+    if (t.open) return { k: 'open', html: 'Open' };
+    if (t.stopped) return { k: 'stop', html: 'Stop exit' };
+    return { k: 'signal', html: 'Signal exit' };
   }
 
   function runWorkbench() {
@@ -491,13 +478,13 @@ function sweep(strategy, p, b, opt) {
     list.forEach(function (t) { if (t.ret > 0) gains += t.ret; else losses += -t.ret; });
     var pf = losses > 0 ? gains / losses : null;
     $('t-kpis').innerHTML =
-      '<div><b>' + pct(m.total) + '</b>' + bi('總報酬', 'Total return') + '</div>' +
-      '<div><b>' + pct(m.cagr) + '</b>' + bi('年化報酬', 'CAGR') + '</div>' +
-      '<div><b>' + pct(m.mdd) + '</b>' + bi('最大回撤', 'Max drawdown') + '</div>' +
-      '<div><b>' + f2(m.sharpe) + '</b>' + bi('Sharpe（年化）', 'Sharpe (annualized)') + '</div>' +
-      '<div><b>' + (pf === null ? '—' : f2(pf)) + '</b>' + bi('獲利因子（交易）', 'Profit factor (trades)') + '</div>' +
-      '<div><b>' + m.trades + '</b>' + bi('進場次數', 'Entries') + '</div>' +
-      '<div><b>' + pct(m.buyHold) + '</b>' + bi('買進持有報酬', 'Buy &amp; hold return') + '</div>';
+      '<div><b>' + pct(m.total) + '</b>' + 'Total return' + '</div>' +
+      '<div><b>' + pct(m.cagr) + '</b>' + 'CAGR' + '</div>' +
+      '<div><b>' + pct(m.mdd) + '</b>' + 'Max drawdown' + '</div>' +
+      '<div><b>' + f2(m.sharpe) + '</b>' + 'Sharpe (annualized)' + '</div>' +
+      '<div><b>' + (pf === null ? '—' : f2(pf)) + '</b>' + 'Profit factor (trades)' + '</div>' +
+      '<div><b>' + m.trades + '</b>' + 'Entries' + '</div>' +
+      '<div><b>' + pct(m.buyHold) + '</b>' + 'Buy &amp; hold return' + '</div>';
 
     var rows = list.map(function (t, i) {
       var s = statusOf(t);
@@ -505,23 +492,23 @@ function sweep(strategy, p, b, opt) {
     });
     $('t-trade-count').textContent = '· ' + rows.length;
     renderTable($('t-trades'), [
-      { k: 'idx', zh: '#', en: '#', num: true, f: function (v) { return String(v); } },
-      { k: 'entryDay', zh: '進場日', en: 'Entry day', num: true, f: function (v) { return String(v); } },
-      { k: 'exitDay', zh: '出場日', en: 'Exit day', num: true, f: function (v) { return String(v); } },
-      { k: 'entryPrice', zh: '進場價', en: 'Entry price', num: true, f: f2 },
-      { k: 'exitPrice', zh: '出場價', en: 'Exit price', num: true, f: f2 },
-      { k: 'ret', zh: '單筆報酬', en: 'Trade return', num: true, f: pct },
-      { k: 'statusKey', zh: '狀態', en: 'Status', html: function (r) { return r.statusHtml; } }
+      { k: 'idx', en: '#', num: true, f: function (v) { return String(v); } },
+      { k: 'entryDay', en: 'Entry day', num: true, f: function (v) { return String(v); } },
+      { k: 'exitDay', en: 'Exit day', num: true, f: function (v) { return String(v); } },
+      { k: 'entryPrice', en: 'Entry price', num: true, f: f2 },
+      { k: 'exitPrice', en: 'Exit price', num: true, f: f2 },
+      { k: 'ret', en: 'Trade return', num: true, f: pct },
+      { k: 'statusKey', en: 'Status', html: function (r) { return r.statusHtml; } }
     ], rows, null);
 
-    var pName = P.st === 'momentum' ? ['回看天數', 'Lookback'] : (P.st === 'sma' ? ['快線天數', 'Fast window'] : ['進場回看', 'Entry lookback']);
+    var pName = P.st === 'momentum' ? 'Lookback' : (P.st === 'sma' ? 'Fast window' : 'Entry lookback');
     var sweepRows = sweep(P.st, prices.slice(start), P.b, { stop: P.stop, costs: P.costs });
     renderTable($('t-sweep'), [
-      { k: 'param', zh: pName[0], en: pName[1], num: true, f: function (v) { return String(v); } },
-      { k: 'total', zh: '總報酬', en: 'Total return', num: true, f: pct },
-      { k: 'mdd', zh: '最大回撤', en: 'Max drawdown', num: true, f: pct },
-      { k: 'sharpe', zh: 'Sharpe', en: 'Sharpe', num: true, f: f2 },
-      { k: 'trades', zh: '進場次數', en: 'Entries', num: true, f: function (v) { return String(v); } }
+      { k: 'param', en: pName, num: true, f: function (v) { return String(v); } },
+      { k: 'total', en: 'Total return', num: true, f: pct },
+      { k: 'mdd', en: 'Max drawdown', num: true, f: pct },
+      { k: 'sharpe', en: 'Sharpe', num: true, f: f2 },
+      { k: 'trades', en: 'Entries', num: true, f: function (v) { return String(v); } }
     ], sweepRows, function (r) { return r.param === P.a; });
   }
 
@@ -545,9 +532,9 @@ function sweep(strategy, p, b, opt) {
     tTip.style.display = 'block';
     tTip.style.left = Math.min(x + 12, rect.width - 170) + 'px';
     tTip.style.top = '8px';
-    tTip.innerHTML = bi('第 ' + (i + last.start) + ' 天', 'Day ' + (i + last.start)) + '<br>' +
-      bi('策略', 'Strategy') + ' ' + pct(last.res.eq[i] - 1) + '<br>' +
-      bi('買進持有', 'Buy &amp; hold') + ' ' + pct(last.bh[i] - 1);
+    tTip.innerHTML = 'Day ' + (i + last.start) + '<br>' +
+      'Strategy' + ' ' + pct(last.res.eq[i] - 1) + '<br>' +
+      'Buy &amp; hold' + ' ' + pct(last.bh[i] - 1);
   });
   tChart.addEventListener('mouseleave', function () {
     hoverIdx = -1; redrawWorkbench(); tTip.style.display = 'none';
@@ -622,19 +609,19 @@ function sweep(strategy, p, b, opt) {
       var res = backtest(prices, signals(st, prices, d.a, d.b), { costs: true });
       var m = metrics(prices, res);
       series.push({ data: res.eq, color: COLORS[st] });
-      rows.push({ st: st, params: st === 'momentum' ? 'lookback ' + d.a : 'A ' + d.a + ' / B ' + d.b, total: m.total, cagr: m.cagr, mdd: m.mdd, sharpe: m.sharpe, trades: m.trades, nameHtml: bi(NAMES[st][0], NAMES[st][1]) });
+      rows.push({ st: st, params: st === 'momentum' ? 'lookback ' + d.a : 'A ' + d.a + ' / B ' + d.b, total: m.total, cagr: m.cagr, mdd: m.mdd, sharpe: m.sharpe, trades: m.trades, nameHtml: NAMES[st][1] });
     });
     var bh = prices.map(function (x) { return x / prices[0]; });
     series.push({ data: bh, color: COLORS.bh });
     drawChart(cvs, series, -1);
     renderTable($('c-table'), [
-      { k: 'nameHtml', zh: '策略', en: 'Strategy', html: function (r) { return r.nameHtml; } },
-      { k: 'params', zh: '預設參數', en: 'Default parameters' },
-      { k: 'total', zh: '總報酬', en: 'Total return', num: true, f: pct },
-      { k: 'cagr', zh: '年化報酬', en: 'CAGR', num: true, f: pct },
-      { k: 'mdd', zh: '最大回撤', en: 'Max drawdown', num: true, f: pct },
-      { k: 'sharpe', zh: 'Sharpe', en: 'Sharpe', num: true, f: f2 },
-      { k: 'trades', zh: '進場次數', en: 'Entries', num: true, f: function (v) { return String(v); } }
+      { k: 'nameHtml', en: 'Strategy', html: function (r) { return r.nameHtml; } },
+      { k: 'params', en: 'Default parameters' },
+      { k: 'total', en: 'Total return', num: true, f: pct },
+      { k: 'cagr', en: 'CAGR', num: true, f: pct },
+      { k: 'mdd', en: 'Max drawdown', num: true, f: pct },
+      { k: 'sharpe', en: 'Sharpe', num: true, f: f2 },
+      { k: 'trades', en: 'Entries', num: true, f: function (v) { return String(v); } }
     ], rows, null);
   }
 
@@ -651,13 +638,6 @@ function sweep(strategy, p, b, opt) {
   }
   window.addEventListener('hashchange', route);
   window.addEventListener('resize', function () { redrawWorkbench(); });
-
-  $('lang').addEventListener('click', function () {
-    var en = document.documentElement.lang !== 'en';
-    document.documentElement.lang = en ? 'en' : 'zh-TW';
-    this.textContent = en ? '中文' : 'English';
-    if (last) redrawWorkbench();
-  });
 
   applyMode(true);
   route();
