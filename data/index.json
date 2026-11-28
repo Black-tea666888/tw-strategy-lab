@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-28 15:25 UTC",
+ "updated": "2026-11-28 15:28 UTC",
  "source": "Yahoo Finance via yfinance (daily close, dividend- and split-adjusted)",
  "window_days": 750,
  "symbols": [
