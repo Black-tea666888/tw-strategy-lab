@@ -7,175 +7,201 @@
 <meta name="description" content="免費開源的台股回測與紙上交易工具。Free, open-source backtesting and paper trading for Taiwan stocks.">
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;color:#1d2433;background:#fff;line-height:1.65}
+body{margin:0;font-family:-apple-system,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;color:#1d2433;background:#fff;line-height:1.6;font-size:15px}
 a{color:#1f6feb}
-.wrap{max-width:900px;margin:0 auto;padding:0 20px}
-header.top{border-bottom:1px solid #e3e7ee;padding:14px 0}
-header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{font-weight:700}
-button#lang{padding:5px 12px;border:1px solid #c5ccd8;border-radius:6px;background:#fff;color:#1d2433;cursor:pointer;font-size:14px}
-h1{font-size:30px;line-height:1.3;margin:36px 0 10px}
-.lead{font-size:16px;color:#4a5365;margin:0 0 16px;max-width:680px}
-h2{font-size:21px;margin:44px 0 12px;padding-top:4px;border-top:1px solid #e3e7ee}
-h2 small{font-size:13px;font-weight:400;color:#6b7385;margin-left:6px}
-p{margin:8px 0}
-.note{font-size:14px;color:#4a5365}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+header.top{border-bottom:1px solid #e3e7ee}
+header.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.brand{font-weight:700;text-decoration:none;color:#1d2433}
+nav.main{display:flex;gap:4px;flex-wrap:wrap}
+nav.main a{padding:6px 10px;border-radius:6px;text-decoration:none;color:#4a5365;font-size:14px}
+nav.main a.on{background:#eef4ff;color:#1f5fc4}
+button,.btn{padding:6px 12px;border:1px solid #c5ccd8;border-radius:6px;background:#fff;color:#1d2433;cursor:pointer;font-size:14px;font-family:inherit}
+button.primary{background:#1f6feb;border-color:#1f6feb;color:#fff}
+button#lang{padding:5px 10px}
+h1{font-size:28px;line-height:1.3;margin:28px 0 8px}
+h2{font-size:20px;margin:30px 0 10px;padding-top:6px;border-top:1px solid #e3e7ee}
+h3{font-size:16px;margin:18px 0 6px}
+.lead{color:#4a5365;margin:0 0 12px;max-width:700px}
+.note{font-size:13px;color:#4a5365;margin:6px 0}
+small.sub{font-size:13px;color:#6b7385;font-weight:400;margin-left:6px}
 table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
-th,td{text-align:left;vertical-align:top;padding:9px 8px;border-bottom:1px solid #e3e7ee}
-th{font-weight:600;color:#4a5365;background:#f7f9fc}
-td code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#f2f4f8;padding:1px 5px;border-radius:4px;word-break:break-all}
-.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:4px;background:#e8f1ff;color:#1f5fc4;white-space:nowrap}
+th,td{text-align:left;vertical-align:top;padding:8px 8px;border-bottom:1px solid #e3e7ee}
+th{font-weight:600;color:#4a5365;background:#f7f9fc;white-space:nowrap}
+th.sortable{cursor:pointer;user-select:none}
+th.sortable:hover{color:#1f6feb}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.hl td{background:#eef4ff}
+td code,code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#f2f4f8;padding:1px 5px;border-radius:4px;word-break:break-all}
+.tag{display:inline-block;font-size:12px;padding:1px 7px;border-radius:4px;background:#e8f1ff;color:#1f5fc4;white-space:nowrap;margin-right:4px}
 .tag.local{background:#f1f3f7;color:#4a5365}
-.pg{border:1px solid #e3e7ee;border-radius:8px;padding:18px;margin-top:12px}
-.pg-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px 18px;align-items:end}
-.pg-field{display:flex;flex-direction:column;gap:6px;font-size:14px;color:#4a5365}
-.pg-field select{padding:7px;border:1px solid #c5ccd8;border-radius:6px;background:#fff;font-size:14px}
-.pg-field output{color:#1d2433;font-weight:600}
-.pg-check{display:flex;align-items:center;gap:8px;font-size:14px;color:#4a5365}
-.pg-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.pg-actions button{padding:7px 14px;border:1px solid #1f6feb;border-radius:6px;background:#fff;color:#1f6feb;cursor:pointer;font-size:14px}
-.pg-actions button.primary{background:#1f6feb;color:#fff}
-#pg-chart{width:100%;height:280px;display:block;margin-top:16px}
-.pg-legend{font-size:13px;color:#4a5365;margin-top:6px;display:flex;gap:16px;flex-wrap:wrap}
-.pg-legend i{display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:6px}
-.pg-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:14px}
-.pg-metrics div{border:1px solid #e3e7ee;border-radius:6px;padding:10px}
-.pg-metrics b{display:block;font-size:17px}
-.pg-metrics span{font-size:12px;color:#6b7385}
-.pg-hidden{display:none!important}
-footer{border-top:1px solid #e3e7ee;margin-top:48px;padding:18px 0 32px;font-size:13px;color:#6b7385}
+.panel{border:1px solid #e3e7ee;border-radius:8px;padding:16px;margin-top:10px}
+.ctrl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 16px;align-items:end}
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:#4a5365}
+.field select{padding:6px;border:1px solid #c5ccd8;border-radius:6px;background:#fff;font-size:14px;font-family:inherit}
+.field output{color:#1d2433;font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.check{display:flex;align-items:center;gap:6px;font-size:14px;color:#4a5365}
+.chartbox{position:relative;margin-top:14px}
+canvas.chart{width:100%;height:280px;display:block}
+.tip{position:absolute;pointer-events:none;background:#1d2433;color:#fff;font-size:12px;padding:6px 8px;border-radius:6px;display:none;white-space:nowrap;line-height:1.5}
+.legend{font-size:13px;color:#4a5365;margin-top:6px;display:flex;gap:14px;flex-wrap:wrap}
+.legend i{display:inline-block;width:16px;height:3px;vertical-align:middle;margin-right:5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:14px}
+.kpis div{border:1px solid #e3e7ee;border-radius:6px;padding:9px}
+.kpis b{display:block;font-size:17px}
+.kpis span{font-size:12px;color:#6b7385}
+.tablewrap{max-height:340px;overflow:auto;border:1px solid #e3e7ee;border-radius:6px;margin-top:8px}
+.tablewrap table{margin-top:0}
+.tablewrap th{position:sticky;top:0;z-index:1}
+.page{display:none}
+.page.on{display:block}
+footer{border-top:1px solid #e3e7ee;margin-top:40px;padding:16px 0 28px;font-size:13px;color:#6b7385}
 html[lang="en"] .zh{display:none!important}
 html[lang="zh-TW"] .en{display:none!important}
+.hide{display:none!important}
+.ctrl>label:first-child{min-width:280px}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
-  <div class="brand">TW Strategy Lab</div>
+  <a class="brand" href="#/home">TW Strategy Lab</a>
+  <nav class="main">
+    <a href="#/home" data-nav="home"><span class="zh">首頁</span><span class="en">Home</span></a>
+    <a href="#/try" data-nav="try"><span class="zh">回測工作台</span><span class="en">Backtest</span></a>
+    <a href="#/compare" data-nav="compare"><span class="zh">策略比較</span><span class="en">Compare</span></a>
+    <a href="#/metrics" data-nav="metrics"><span class="zh">指標說明</span><span class="en">Metrics</span></a>
+  </nav>
   <button id="lang" type="button">English</button>
 </div></header>
 
 <main class="wrap">
-  <h1><span class="zh">用歷史資料檢查策略</span><span class="en">Check a strategy against history</span></h1>
-  <p class="lead">
-    <span class="zh">這是一個免費、開源的台股回測與紙上交易工具。下方可以直接試用一個簡化版的回測，完整功能需要在自己的電腦上執行。本工具不下單，也不保管資金。</span>
-    <span class="en">A free, open-source backtesting and paper-trading tool for Taiwan stocks. Try a simplified backtest below. The full feature set runs on your own computer. The tool places no orders and holds no funds.</span>
-  </p>
 
-  <h2 id="try"><span class="zh">互動示範</span><span class="en">Try it</span>
-    <small class="zh">模擬資料，在瀏覽器內計算，不連網</small><small class="en">Simulated data, computed in your browser, no network</small></h2>
-  <div class="pg">
-    <div class="pg-controls">
-      <label class="pg-field"><span class="zh">策略</span><span class="en">Strategy</span>
-        <select id="pg-strategy">
+<section class="page" data-page="home">
+  <h1><span class="zh">用歷史資料檢查策略</span><span class="en">Check a strategy against history</span></h1>
+  <p class="lead"><span class="zh">免費、開源的台股回測與紙上交易工具。這個網頁可以直接試用回測工作台、策略比較與指標說明；完整功能需要在自己的電腦執行。本工具不下單，也不保管資金。</span><span class="en">A free, open-source backtesting and paper-trading tool for Taiwan stocks. This page lets you try the backtest workbench, strategy comparison and metric definitions. The full feature set runs on your own computer. The tool places no orders and holds no funds.</span></p>
+  <p><a href="#/try"><span class="zh">開始回測 →</span><span class="en">Start a backtest →</span></a></p>
+
+  <h2><span class="zh">功能與用法</span><span class="en">Features and usage</span></h2>
+  <p class="note"><span class="zh"><span class="tag">網頁</span>可以在這個頁面操作　<span class="tag local">本機</span>要在自己的電腦執行指令</span><span class="en"><span class="tag">Web</span>try it on this page　<span class="tag local">Local</span>run the command on your computer</span></p>
+  <table>
+    <tr><th><span class="zh">功能</span><span class="en">Feature</span></th><th><span class="zh">說明</span><span class="en">What it does</span></th><th><span class="zh">在哪裡用</span><span class="en">Where</span></th></tr>
+    <tr><td><span class="zh">單一標的回測</span><span class="en">Single-asset backtest</span></td><td><span class="zh">SMA 交叉、唐奇安通道、動量三種策略，扣除手續費、證交稅與滑價後計算績效。</span><span class="en">SMA crossover, Donchian channel and momentum, with costs deducted.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span><br><code>python -m quant_platform.cli --symbol 2330 --strategy sma --fast 20 --slow 60</code></td></tr>
+    <tr><td><span class="zh">交易明細與參數掃描</span><span class="en">Trade blotter and parameter sweep</span></td><td><span class="zh">逐筆列出進出場、單筆報酬與停損出場；對多組參數比較績效，表頭可排序。</span><span class="en">Each trade with entry, exit and return, plus a sortable sweep across parameter values.</span></td><td><span class="tag">網頁</span></td></tr>
+    <tr><td><span class="zh">停損與風控</span><span class="en">Stop loss and risk limits</span></td><td><span class="zh">停損、單日虧損上限、最大回撤停止。停損可在網頁試用，其餘兩項在本機設定。</span><span class="en">Stop loss, daily loss limit and max-drawdown halt. Stop loss is on this page; the other two are local.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span><br><code>--stop-loss 0.08 --daily-loss-limit 0.03 --max-drawdown-halt 0.2</code></td></tr>
+    <tr><td><span class="zh">滾動前進驗證</span><span class="en">Walk-forward validation</span></td><td><span class="zh">參數只在訓練區間選擇，樣本外區間才評估，用來檢查是否過度擬合。</span><span class="en">Parameters are chosen on training windows only, then tested out of sample.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.validate_cli --csv prices.csv --fast 5,10,20 --slow 40,60,120</code></td></tr>
+    <tr><td><span class="zh">多標的投資組合</span><span class="en">Multi-asset portfolio</span></td><td><span class="zh">等權或訊號加權，可設定再平衡頻率與單一標的上限，超出上限的部分以現金持有。</span><span class="en">Equal or signal weights, with rebalancing frequency and a per-asset cap. Excess goes to cash.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.portfolio_cli --csv 2330=a.csv --csv 2317=b.csv --max-weight 0.25</code></td></tr>
+    <tr><td><span class="zh">績效指標</span><span class="en">Performance metrics</span></td><td><span class="zh">報酬、年化報酬、最大回撤、Sharpe、Sortino、Calmar、獲利因子與 Sharpe 的 95% bootstrap 區間。網頁顯示其中一部分。</span><span class="en">Returns, CAGR, max drawdown, Sharpe, Sortino, Calmar, profit factor and a 95% bootstrap interval for Sharpe. This page shows a subset.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span></td></tr>
+    <tr><td><span class="zh">紙上交易</span><span class="en">Paper trading</span></td><td><span class="zh">只模擬下單，帳戶狀態以 JSON 檔保存，不連接任何券商。</span><span class="en">Simulated orders only. Account state is saved to a JSON file. No broker connection.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.paper_cli --symbol 2330.TW --state account.json --capital 1000000</code></td></tr>
+    <tr><td><span class="zh">資料來源</span><span class="en">Data sources</span></td><td><span class="zh">可從 Yahoo 或 TWSE 取得歷史價格，也能匯入自己的 CSV（需要 date 與 close 欄位）。</span><span class="en">Historical prices from Yahoo or TWSE, or your own CSV with date and close columns.</span></td><td><span class="tag local">本機</span><br><code>--symbol 2330 --source twse</code> / <code>--csv my.csv</code></td></tr>
+    <tr><td><span class="zh">自訂市場設定</span><span class="en">Custom market profiles</span></td><td><span class="zh">用 JSON 定義交易日數、手續費與證交稅，不限於台股預設值。</span><span class="en">Define trading days, fees and sell tax in a JSON file.</span></td><td><span class="tag local">本機</span><br><code>--market-file my_market.json</code></td></tr>
+    <tr><td><span class="zh">HTML 報告</span><span class="en">HTML report</span></td><td><span class="zh">輸出單一 HTML 檔，不需要伺服器即可打開。網頁上也能下載目前結果的報告。</span><span class="en">One HTML file that opens without a server. You can also download a report of the current result here.</span></td><td><span class="tag">網頁</span><span class="tag local">本機</span><br><code>--report report.html</code></td></tr>
+    <tr><td><span class="zh">雙語輸出</span><span class="en">Bilingual output</span></td><td><span class="zh">命令列與報告都支援繁體中文與英文。</span><span class="en">The command line and reports support Traditional Chinese and English.</span></td><td><span class="tag local">本機</span><br><code>--lang en</code> / <code>--lang zh-TW</code></td></tr>
+    <tr><td><span class="zh">帳號與稽核</span><span class="en">Accounts and audit log</span></td><td><span class="zh">管理員與一般成員兩種角色，密碼以 PBKDF2 雜湊儲存，多次失敗會暫時鎖定；建立帳號與登入事件會寫入稽核紀錄。</span><span class="en">Admin and member roles. Passwords are stored as PBKDF2 hashes with temporary lockout after repeated failures. Account and sign-in events go to the audit log.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.accounts_cli --db accounts.db --workspace ws create --email you@example.com</code></td></tr>
+    <tr><td><span class="zh">風險平價與因子檢驗</span><span class="en">Risk parity and factor checks</span></td><td><span class="zh">依風險貢獻計算權重（Ledoit-Wolf 收縮估計），以及動量因子的 IC 檢驗。</span><span class="en">Risk-parity weights with Ledoit-Wolf shrinkage, and momentum factor IC checks.</span></td><td><span class="tag local">本機</span><br><code>python -m quant_platform.risk_parity_cli --csv A=a.csv --csv B=b.csv</code></td></tr>
+  </table>
+
+  <h2><span class="zh">範例報告</span><span class="en">Sample reports</span><small class="sub"><span class="zh">模擬資料</span><span class="en">simulated data</span></small></h2>
+  <p class="note"><span class="zh">範例以模擬價格產生，用來展示報告格式，不是真實股價。</span><span class="en">Samples use simulated prices to show the report format. They are not real market data.</span></p>
+  <p><a href="reports/sample-zh.html"><span class="zh">開啟範例報告（繁體中文）</span></a><a href="reports/sample-en.html"><span class="en">Open sample report (English)</span></a></p>
+
+  <h2><span class="zh">重要說明</span><span class="en">Important</span></h2>
+  <p class="note"><span class="zh">本站不提供投資建議、個股推薦或報酬承諾。過去的回測結果不代表未來表現。回測與紙上交易都不會實際下單。</span><span class="en">This site gives no investment advice, stock recommendations or return promises. Past backtest results do not predict future performance. Backtests and paper trading place no real orders.</span></p>
+</section>
+
+<section class="page" data-page="try">
+  <h1><span class="zh">回測工作台</span><span class="en">Backtest workbench</span></h1>
+  <p class="note"><span class="zh">模擬資料，在瀏覽器內計算，不連網。</span><span class="en">Simulated data, computed in your browser. No network.</span></p>
+  <div class="panel">
+    <div class="ctrl">
+      <label class="field"><span class="zh">策略</span><span class="en">Strategy</span>
+        <select id="t-strategy">
           <option value="sma">SMA 均線交叉 / SMA crossover</option>
           <option value="donchian">唐奇安通道 / Donchian channel</option>
           <option value="momentum">動量 / Momentum</option>
-        </select>
-      </label>
-      <label class="pg-field"><span id="pg-a-label"></span>
-        <span><input type="range" id="pg-a"> <output id="pg-a-out"></output></span>
-      </label>
-      <label class="pg-field" id="pg-b-wrap"><span id="pg-b-label"></span>
-        <span><input type="range" id="pg-b"> <output id="pg-b-out"></output></span>
-      </label>
-      <label class="pg-field"><span class="zh">停損（0 = 關閉）</span><span class="en">Stop loss (0 = off)</span>
-        <span><input type="range" id="pg-stop" min="0" max="30" step="1" value="0"> <output id="pg-stop-out"></output></span>
-      </label>
+        </select></label>
+      <label class="field"><span id="t-a-label"></span>
+        <span><input type="range" id="t-a"> <output id="t-a-out"></output></span></label>
+      <label class="field" id="t-b-wrap"><span id="t-b-label"></span>
+        <span><input type="range" id="t-b"> <output id="t-b-out"></output></span></label>
+      <label class="field"><span class="zh">回測期間</span><span class="en">Period</span>
+        <select id="t-range">
+          <option value="0">全部 / All</option>
+          <option value="252">最近一年 / Last 1 year</option>
+          <option value="504">最近兩年 / Last 2 years</option>
+        </select></label>
+      <label class="field"><span class="zh">停損（0 = 關閉）</span><span class="en">Stop loss (0 = off)</span>
+        <span><input type="range" id="t-stop" min="0" max="30" step="1" value="0"> <output id="t-stop-out"></output></span></label>
     </div>
-    <div class="pg-actions" style="margin-top:14px">
-      <label class="pg-check"><input type="checkbox" id="pg-costs" checked>
+    <div class="row">
+      <label class="check"><input type="checkbox" id="t-costs" checked>
         <span class="zh">計入手續費、證交稅與滑價</span><span class="en">Include commission, sell tax and slippage</span></label>
     </div>
-    <div class="pg-actions">
-      <button type="button" class="primary" id="pg-new"><span class="zh">換一組模擬資料</span><span class="en">New simulated data</span></button>
-      <button type="button" id="pg-reset"><span class="zh">還原預設參數</span><span class="en">Reset parameters</span></button>
+    <div class="row">
+      <button type="button" class="primary" id="t-new"><span class="zh">換一組模擬資料</span><span class="en">New simulated data</span></button>
+      <button type="button" id="t-reset"><span class="zh">還原預設參數</span><span class="en">Reset parameters</span></button>
+      <button type="button" id="dl-equity"><span class="zh">下載淨值 CSV</span><span class="en">Download equity CSV</span></button>
+      <button type="button" id="dl-trades"><span class="zh">下載交易 CSV</span><span class="en">Download trades CSV</span></button>
+      <button type="button" id="dl-report"><span class="zh">下載 HTML 報告</span><span class="en">Download HTML report</span></button>
     </div>
-    <canvas id="pg-chart" aria-label="equity curve"></canvas>
-    <div class="pg-legend">
+    <div class="chartbox">
+      <canvas class="chart" id="t-chart" aria-label="equity curve"></canvas>
+      <div class="tip" id="t-tip"></div>
+    </div>
+    <div class="legend">
       <span><i style="background:#1f6feb"></i><span class="zh">策略淨值</span><span class="en">Strategy equity</span></span>
       <span><i style="background:#8a94a6"></i><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></span>
+      <span class="note"><span class="zh">滑鼠移到圖上可查看每一天的數值</span><span class="en">Hover over the chart to read each day</span></span>
     </div>
-    <div class="pg-metrics" id="pg-metrics"></div>
-    <p class="note" style="margin-top:12px"><span class="zh">資料編號 <span id="pg-seed"></span>，為隨機漫步產生的模擬價格，不是真實股價。成本設定：手續費 0.1425%（買賣各收）、證交稅 0.3%（賣出）、滑價 0.05%（買賣各計）。</span><span class="en">Dataset <span id="pg-seed-en"></span> is a simulated random walk, not real prices. Costs: commission 0.1425% per side, sell tax 0.3% on sales, slippage 0.05% per side.</span></p>
+    <div class="kpis" id="t-kpis"></div>
   </div>
 
-  <h2><span class="zh">功能與用法</span><span class="en">Features and usage</span></h2>
-  <p class="note"><span class="zh">「網頁」表示可以在上方示範操作；「本機」表示要在自己的電腦執行下面的指令。</span><span class="en">"Web" means you can try it in the demo above. "Local" means run the command on your own computer.</span></p>
+  <h2><span class="zh">交易明細</span><span class="en">Trade blotter</span><small class="sub" id="t-trade-count"></small></h2>
+  <p class="note"><span class="zh">單筆報酬為進出場價格變動，已扣除成本的概算。點表頭可排序。</span><span class="en">Trade return is the price move between entry and exit, net of costs (approximate). Click a header to sort.</span></p>
+  <div class="tablewrap"><table id="t-trades"></table></div>
+
+  <h2><span class="zh">參數掃描</span><span class="en">Parameter sweep</span></h2>
+  <p class="note"><span class="zh">固定其他參數，只改變策略的主要參數，比較績效。目前使用的參數以淡藍色標示。點表頭可排序。</span><span class="en">Vary the main parameter and keep the rest fixed. The current setting is highlighted. Click a header to sort.</span></p>
+  <div class="tablewrap"><table id="t-sweep"></table></div>
+</section>
+
+<section class="page" data-page="compare">
+  <h1><span class="zh">策略比較</span><span class="en">Strategy comparison</span></h1>
+  <p class="note"><span class="zh">三種策略使用同一組模擬資料與預設參數。資料與回測工作台共用，換資料時兩邊都會更新。</span><span class="en">All three strategies use the same simulated data and default parameters. Data is shared with the workbench.</span></p>
+  <div class="panel">
+    <div class="chartbox"><canvas class="chart" id="c-chart" aria-label="comparison"></canvas></div>
+    <div class="legend">
+      <span><i style="background:#1f6feb"></i>SMA</span>
+      <span><i style="background:#d9822b"></i><span class="zh">唐奇安</span><span class="en">Donchian</span></span>
+      <span><i style="background:#2da44e"></i><span class="zh">動量</span><span class="en">Momentum</span></span>
+      <span><i style="background:#8a94a6"></i><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></span>
+    </div>
+  </div>
+  <div class="tablewrap" style="max-height:none"><table id="c-table"></table></div>
+  <p class="note"><span class="zh">注意：三種策略的預設參數不同，比較只說明在這組模擬資料上的結果，不代表任何策略在真實市場的表現。</span><span class="en">Each strategy uses its own default parameters. This compares results on one simulated dataset only and does not predict real-market performance.</span></p>
+</section>
+
+<section class="page" data-page="metrics">
+  <h1><span class="zh">指標說明</span><span class="en">Metric definitions</span></h1>
   <table>
-    <tr><th><span class="zh">功能</span><span class="en">Feature</span></th><th><span class="zh">說明</span><span class="en">What it does</span></th><th><span class="zh">在哪裡用</span><span class="en">Where</span></th></tr>
-    <tr>
-      <td><span class="zh">單一標的回測</span><span class="en">Single-asset backtest</span></td>
-      <td><span class="zh">SMA 交叉、唐奇安通道、動量三種策略，扣除手續費、證交稅與滑價後計算績效。</span><span class="en">SMA crossover, Donchian channel and momentum, with costs deducted.</span></td>
-      <td><span class="tag">Web</span> <span class="tag local">Local</span><br><code>python -m quant_platform.cli --symbol 2330 --strategy sma --fast 20 --slow 60</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">停損與風控</span><span class="en">Stop loss and risk limits</span></td>
-      <td><span class="zh">停損、單日虧損上限、最大回撤停止。停損可在示範中試用，其餘兩項在本機設定。</span><span class="en">Stop loss, daily loss limit and max-drawdown halt. Stop loss is in the demo; the other two are local.</span></td>
-      <td><span class="tag">Web</span> <span class="tag local">Local</span><br><code>--stop-loss 0.08 --daily-loss-limit 0.03 --max-drawdown-halt 0.2</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">滾動前進驗證</span><span class="en">Walk-forward validation</span></td>
-      <td><span class="zh">參數只在訓練區間選擇，樣本外區間才評估，用來檢查是否過度擬合。</span><span class="en">Parameters are chosen on training windows only, then tested out of sample.</span></td>
-      <td><span class="tag local">Local</span><br><code>python -m quant_platform.validate_cli --csv prices.csv --fast 5,10,20 --slow 40,60,120</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">多標的投資組合</span><span class="en">Multi-asset portfolio</span></td>
-      <td><span class="zh">等權或訊號加權，可設定再平衡頻率與單一標的上限，超出上限的部分以現金持有。</span><span class="en">Equal or signal weights, with rebalancing frequency and a per-asset cap. Excess goes to cash.</span></td>
-      <td><span class="tag local">Local</span><br><code>python -m quant_platform.portfolio_cli --csv 2330=a.csv --csv 2317=b.csv --max-weight 0.25</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">績效指標</span><span class="en">Performance metrics</span></td>
-      <td><span class="zh">報酬、年化報酬、最大回撤、Sharpe、Sortino、Calmar、獲利因子，並附 Sharpe 的 95% bootstrap 區間。</span><span class="en">Returns, CAGR, max drawdown, Sharpe, Sortino, Calmar, profit factor, and a 95% bootstrap interval for Sharpe.</span></td>
-      <td><span class="tag">Web</span> <span class="tag local">Local</span><br><span class="zh">示範顯示部分指標；完整指標在本機輸出。</span><span class="en">The demo shows some metrics; the full set is local.</span></td>
-    </tr>
-    <tr>
-      <td><span class="zh">紙上交易</span><span class="en">Paper trading</span></td>
-      <td><span class="zh">只模擬下單，帳戶狀態以 JSON 檔保存，不連接任何券商。</span><span class="en">Simulated orders only. Account state is saved to a JSON file. No broker connection.</span></td>
-      <td><span class="tag local">Local</span><br><code>python -m quant_platform.paper_cli --symbol 2330.TW --state account.json --capital 1000000</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">資料來源</span><span class="en">Data sources</span></td>
-      <td><span class="zh">可從 Yahoo 或 TWSE 取得歷史價格，也能匯入自己的 CSV 檔（需要 date 與 close 欄位）。</span><span class="en">Historical prices from Yahoo or TWSE, or your own CSV with date and close columns.</span></td>
-      <td><span class="tag local">Local</span><br><code>--symbol 2330 --source twse</code> / <code>--csv my.csv</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">自訂市場設定</span><span class="en">Custom market profiles</span></td>
-      <td><span class="zh">用 JSON 定義交易日數、手續費與證交稅，不限於台股預設值。</span><span class="en">Define trading days, fees and sell tax in a JSON file.</span></td>
-      <td><span class="tag local">Local</span><br><code>--market-file my_market.json</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">HTML 報告</span><span class="en">HTML report</span></td>
-      <td><span class="zh">輸出單一 HTML 檔，不需要伺服器即可打開。範例見下方。</span><span class="en">Exports one HTML file that opens without a server. Samples are below.</span></td>
-      <td><span class="tag local">Local</span><br><code>--report report.html</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">雙語輸出</span><span class="en">Bilingual output</span></td>
-      <td><span class="zh">命令列與報告都支援繁體中文與英文。</span><span class="en">The command line and reports support Traditional Chinese and English.</span></td>
-      <td><span class="tag local">Local</span><br><code>--lang en</code> / <code>--lang zh-TW</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">帳號與稽核</span><span class="en">Accounts and audit log</span></td>
-      <td><span class="zh">管理員與一般成員兩種角色，密碼以 PBKDF2 雜湊儲存，多次失敗會暫時鎖定；建立帳號與登入事件會寫入稽核紀錄。</span><span class="en">Admin and member roles. Passwords are stored as PBKDF2 hashes with temporary lockout after repeated failures. Account and sign-in events go to the audit log.</span></td>
-      <td><span class="tag local">Local</span><br><code>python -m quant_platform.accounts_cli --db accounts.db --workspace ws create --email you@example.com</code></td>
-    </tr>
-    <tr>
-      <td><span class="zh">風險平價與因子檢驗</span><span class="en">Risk parity and factor checks</span></td>
-      <td><span class="zh">依風險貢獻計算權重（Ledoit-Wolf 收縮估計），以及動量因子的 IC 檢驗。</span><span class="en">Risk-parity weights with Ledoit-Wolf shrinkage, and momentum factor IC checks.</span></td>
-      <td><span class="tag local">Local</span><br><code>python -m quant_platform.risk_parity_cli --csv A=a.csv --csv B=b.csv</code></td>
-    </tr>
+    <tr><th><span class="zh">指標</span><span class="en">Metric</span></th><th><span class="zh">定義</span><span class="en">Definition</span></th></tr>
+    <tr><td><span class="zh">總報酬</span><span class="en">Total return</span></td><td><span class="zh">期末淨值減 1，已扣除成本。</span><span class="en">Final equity minus 1, net of costs.</span></td></tr>
+    <tr><td><span class="zh">年化報酬（CAGR）</span><span class="en">CAGR</span></td><td><span class="zh">以 252 個交易日為一年，把總報酬換算成每年複利。</span><span class="en">Total growth compounded per year, using 252 trading days per year.</span></td></tr>
+    <tr><td><span class="zh">最大回撤</span><span class="en">Max drawdown</span></td><td><span class="zh">淨值從歷史高點下跌的最大幅度。</span><span class="en">The largest fall of equity from a prior peak.</span></td></tr>
+    <tr><td>Sharpe</td><td><span class="zh">每日報酬的平均值除以標準差，再乘上 √252。假設無風險利率為 0。</span><span class="en">Mean daily return over its standard deviation, times √252. Risk-free rate assumed zero.</span></td></tr>
+    <tr><td>Sortino</td><td><span class="zh">類似 Sharpe，但分母只用下跌的波動。</span><span class="en">Like Sharpe, but the denominator uses only downside volatility.</span></td></tr>
+    <tr><td>Calmar</td><td><span class="zh">年化報酬除以最大回撤的絕對值。</span><span class="en">CAGR divided by the absolute max drawdown.</span></td></tr>
+    <tr><td><span class="zh">獲利因子</span><span class="en">Profit factor</span></td><td><span class="zh">獲利交易的總獲利除以虧損交易的總虧損。</span><span class="en">Total gains of winning trades divided by total losses of losing trades.</span></td></tr>
+    <tr><td><span class="zh">進場次數</span><span class="en">Entries</span></td><td><span class="zh">策略建立部位的次數（含期末仍持有的部位）。</span><span class="en">How many times the strategy opened a position, including one still open at the end.</span></td></tr>
+    <tr><td><span class="zh">買進持有</span><span class="en">Buy &amp; hold</span></td><td><span class="zh">第一天買進並持有到期末的總報酬，作為基準。</span><span class="en">Total return of buying on day one and holding to the end. Used as a benchmark.</span></td></tr>
   </table>
+</section>
 
-  <h2><span class="zh">範例報告</span><span class="en">Sample reports</span><small class="zh">模擬資料</small><small class="en">simulated data</small></h2>
-  <p class="note"><span class="zh">範例以模擬價格產生，用來展示報告格式，不是真實股價。</span><span class="en">Samples use simulated prices to show the report format. They are not real market data.</span></p>
-  <p><a class="zh" href="reports/sample-zh.html">開啟範例報告（繁體中文）</a><a class="en" href="reports/sample-en.html">Open sample report (English)</a></p>
-
-  <h2><span class="zh">重要說明</span><span class="en">Important</span></h2>
-  <p class="note"><span class="zh">本站不提供投資建議、個股推薦或報酬承諾。過去的回測結果不代表未來表現。紙上交易與回測都不會實際下單。</span><span class="en">This site gives no investment advice, stock recommendations or return promises. Past backtest results do not predict future performance. Backtests and paper trading place no real orders.</span></p>
 </main>
 
 <footer class="wrap">
-  <span class="zh">© TW Strategy Lab · 本站內容僅供教育用途。</span>
-  <span class="en">© TW Strategy Lab · For educational purposes only.</span>
+  <span class="zh">© TW Strategy Lab · 本站內容僅供教育用途，不構成投資建議。</span>
+  <span class="en">© TW Strategy Lab · For educational purposes only. Not investment advice.</span>
 </footer>
 <script>
 
@@ -238,24 +264,42 @@ function signals(strategy, p, a, b) {
 function backtest(p, sig, opt) {
   var stop = (opt && opt.stop) || 0;
   var costs = !opt || opt.costs !== false;
-  var n = p.length, eq = [1], rets = [], trades = 0, prev = 0, entry = 0, stopped = false;
+  var n = p.length, eq = [1], rets = [], list = [], prev = 0, entry = 0, stopped = false, cur = null;
   for (var t = 1; t < n; t++) {
     if (sig[t - 1] === 0) stopped = false;
     var pos = (sig[t - 1] === 1 && !stopped) ? 1 : 0;
     var r = 0;
-    if (pos === 1 && prev === 0) { entry = p[t - 1]; trades++; if (costs) r -= BUY_COST; }
+    if (pos === 1 && prev === 0) {
+      entry = p[t - 1];
+      cur = { entryDay: t - 1, entryPrice: entry, stopped: false };
+      if (costs) r -= BUY_COST;
+    }
     if (pos === 1) r += p[t] / p[t - 1] - 1;
-    if (pos === 0 && prev === 1 && costs) r -= SELL_COST;
-    if (pos === 1 && stop > 0 && p[t] <= entry * (1 - stop)) stopped = true;
+    if (pos === 0 && prev === 1) {
+      if (costs) r -= SELL_COST;
+      list.push(closeOf(cur, p[t - 1], t - 1, costs, false));
+      cur = null;
+    }
+    if (pos === 1 && stop > 0 && p[t] <= entry * (1 - stop)) { stopped = true; cur.stopped = true; }
     rets.push(r);
     eq.push(eq[t - 1] * (1 + r));
     prev = pos;
   }
-  return { eq: eq, rets: rets, trades: trades };
+  if (cur) list.push(closeOf(cur, p[n - 1], n - 1, costs, true));
+  return { eq: eq, rets: rets, trades: list.length, list: list };
+}
+
+function closeOf(c, exitPrice, exitDay, costs, open) {
+  var ret = exitPrice / c.entryPrice - 1 - (costs ? BUY_COST + SELL_COST : 0);
+  return { entryDay: c.entryDay, exitDay: exitDay, entryPrice: c.entryPrice, exitPrice: exitPrice, ret: ret, stopped: c.stopped, open: open };
 }
 
 function metrics(p, res) {
-  var eq = res.eq, rets = res.rets, n = rets.length, last = eq[eq.length - 1];
+  return metricsCore(res.eq, res.rets, res.trades, p[p.length - 1] / p[0] - 1);
+}
+
+function metricsCore(eq, rets, trades, buyHold) {
+  var n = rets.length, last = eq[eq.length - 1];
   var years = n / 252;
   var cagr = years > 0 && last > 0 ? Math.pow(last, 1 / years) - 1 : 0;
   var peak = eq[0], mdd = 0, i;
@@ -268,117 +312,355 @@ function metrics(p, res) {
   var v = 0; for (i = 0; i < n; i++) v += (rets[i] - mean) * (rets[i] - mean);
   var sd = n > 1 ? Math.sqrt(v / (n - 1)) : 0;
   var sharpe = sd > 0 ? mean / sd * Math.sqrt(252) : 0;
-  return { total: last - 1, cagr: cagr, mdd: mdd, sharpe: sharpe, trades: res.trades, buyHold: p[p.length - 1] / p[0] - 1 };
+  return { total: last - 1, cagr: cagr, mdd: mdd, sharpe: sharpe, trades: trades, buyHold: buyHold };
 }
 
 
+var SWEEP_VALUES = {
+  sma: [5, 10, 15, 20, 30, 40, 50, 60, 80, 100],
+  donchian: [10, 20, 30, 40, 55, 70, 90, 120],
+  momentum: [5, 10, 20, 40, 60, 90, 120, 150, 200, 250]
+};
+function sweep(strategy, p, b, opt) {
+  var vals = SWEEP_VALUES[strategy], rows = [];
+  for (var i = 0; i < vals.length; i++) {
+    var a = vals[i];
+    var bb = strategy === 'momentum' ? 0 : b;
+    var res = backtest(p, signals(strategy, p, a, bb), opt);
+    var m = metrics(p, res);
+    rows.push({ param: a, total: m.total, mdd: m.mdd, sharpe: m.sharpe, trades: m.trades });
+  }
+  return rows;
+}
+
 (function () {
+  function $(id) { return document.getElementById(id); }
   function bi(zh, en) { return '<span class="zh">' + zh + '</span><span class="en">' + en + '</span>'; }
   function pct(x) { return (x * 100).toFixed(2) + '%'; }
+  function f2(x) { return x.toFixed(2); }
+  function f4(x) { return x.toFixed(4); }
 
+  var COLORS = { sma: '#1f6feb', donchian: '#d9822b', momentum: '#2da44e', bh: '#8a94a6' };
   var MODES = {
     sma:      { a: [5, 60, 20],  b: [20, 200, 60], aZh: '快線天數', aEn: 'Fast window (days)', bZh: '慢線天數', bEn: 'Slow window (days)' },
     donchian: { a: [10, 120, 55], b: [5, 60, 20],  aZh: '進場回看天數', aEn: 'Entry lookback (days)', bZh: '出場回看天數', bEn: 'Exit lookback (days)' },
     momentum: { a: [5, 250, 60],  b: null,         aZh: '動量回看天數', aEn: 'Lookback (days)' }
   };
-
-  var stratEl = document.getElementById('pg-strategy');
-  var aEl = document.getElementById('pg-a'), bEl = document.getElementById('pg-b'), stopEl = document.getElementById('pg-stop');
-  var costsEl = document.getElementById('pg-costs');
-  var aOut = document.getElementById('pg-a-out'), bOut = document.getElementById('pg-b-out'), stopOut = document.getElementById('pg-stop-out');
-  var aLabel = document.getElementById('pg-a-label'), bLabel = document.getElementById('pg-b-label');
-  var bWrap = document.getElementById('pg-b-wrap');
-  var canvas = document.getElementById('pg-chart'), ctx = canvas.getContext('2d');
-  var metricsEl = document.getElementById('pg-metrics');
+  var DEFAULTS = { sma: { a: 20, b: 60 }, donchian: { a: 55, b: 20 }, momentum: { a: 60, b: 0 } };
+  var NAMES = { sma: ['SMA 均線交叉', 'SMA crossover'], donchian: ['唐奇安通道', 'Donchian channel'], momentum: ['動量', 'Momentum'] };
   var seed = 7, prices = makePrices(seed);
+  var hoverIdx = -1, last = null;
 
+  // ---------- downloads ----------
+  function download(name, text, mime) {
+    var blob = new Blob([text], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 0);
+  }
+
+  // ---------- chart ----------
+  function drawChart(canvas, series, hover) {
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    var lo = Infinity, hi = -Infinity, i, j;
+    series.forEach(function (s) { s.data.forEach(function (v) { if (v < lo) lo = v; if (v > hi) hi = v; }); });
+    var pad = (hi - lo) * 0.08 || 0.01; lo -= pad; hi += pad;
+    var n = series[0].data.length, L = 8, R = w - 8, T = 8, B = h - 8;
+    canvas._g = { L: L, R: R, T: T, B: B, n: n };
+    ctx.strokeStyle = 'rgba(128,128,128,.2)'; ctx.lineWidth = 1;
+    for (i = 0; i <= 4; i++) {
+      var gy = T + (B - T) * i / 4;
+      ctx.beginPath(); ctx.moveTo(L, gy); ctx.lineTo(R, gy); ctx.stroke();
+    }
+    function X(k) { return L + (R - L) * k / (n - 1); }
+    function Y(v) { return B - (B - T) * (v - lo) / (hi - lo); }
+    series.forEach(function (s) {
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.beginPath();
+      for (j = 0; j < n; j++) { if (j === 0) ctx.moveTo(X(j), Y(s.data[j])); else ctx.lineTo(X(j), Y(s.data[j])); }
+      ctx.stroke();
+    });
+    if (hover >= 0 && hover < n) {
+      ctx.strokeStyle = 'rgba(29,36,51,.35)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(X(hover), T); ctx.lineTo(X(hover), B); ctx.stroke();
+      series.forEach(function (s) {
+        ctx.fillStyle = s.color; ctx.beginPath();
+        ctx.arc(X(hover), Y(s.data[hover]), 3.5, 0, Math.PI * 2); ctx.fill();
+      });
+    }
+  }
+
+  // ---------- sortable tables ----------
+  var sorts = {};
+  function renderTable(el, cols, rows, hl) {
+    var st = sorts[el.id] || { k: null, dir: 1 };
+    var data = rows.slice();
+    if (st.k) {
+      data.sort(function (x, y) {
+        var a = x[st.k], b = y[st.k];
+        if (a === b) return 0;
+        return (a < b ? -1 : 1) * st.dir;
+      });
+    }
+    var h = '<thead><tr>';
+    cols.forEach(function (c) {
+      var arrow = st.k === c.k ? (st.dir > 0 ? ' ▲' : ' ▼') : '';
+      h += '<th class="sortable' + (c.num ? ' num' : '') + '" data-k="' + c.k + '">' + bi(c.zh, c.en) + arrow + '</th>';
+    });
+    h += '</tr></thead><tbody>';
+    if (!data.length) h += '<tr><td colspan="' + cols.length + '">' + bi('沒有資料', 'No data') + '</td></tr>';
+    data.forEach(function (r) {
+      h += '<tr' + (hl && hl(r) ? ' class="hl"' : '') + '>';
+      cols.forEach(function (c) {
+        var cell = c.html ? c.html(r) : (c.f ? c.f(r[c.k]) : String(r[c.k]));
+        h += '<td' + (c.num ? ' class="num"' : '') + '>' + cell + '</td>';
+      });
+      h += '</tr>';
+    });
+    h += '</tbody>';
+    el.innerHTML = h;
+    el.querySelectorAll('th.sortable').forEach(function (th) {
+      th.addEventListener('click', function () {
+        var k = th.getAttribute('data-k');
+        var cur = sorts[el.id] || { k: null, dir: 1 };
+        sorts[el.id] = cur.k === k ? { k: k, dir: -cur.dir } : { k: k, dir: 1 };
+        renderTable(el, cols, rows, hl);
+      });
+    });
+  }
+
+  // ---------- strategy controls ----------
+  var stratEl = $('t-strategy'), aEl = $('t-a'), bEl = $('t-b'), stopEl = $('t-stop'), costsEl = $('t-costs');
+  var aOut = $('t-a-out'), bOut = $('t-b-out'), stopOut = $('t-stop-out');
+  var aLabel = $('t-a-label'), bLabel = $('t-b-label'), bWrap = $('t-b-wrap');
   function setRange(el, out, r) { el.min = r[0]; el.max = r[1]; el.value = r[2]; out.textContent = r[2]; }
-
   function applyMode(reset) {
     var m = MODES[stratEl.value];
     aLabel.innerHTML = bi(m.aZh, m.aEn);
-    if (reset) setRange(aEl, aOut, m.a);
+    if (reset) setRange(aEl, aOut, m.a); else { aEl.min = m.a[0]; aEl.max = m.a[1]; }
     if (m.b) {
-      bWrap.classList.remove('pg-hidden');
+      bWrap.classList.remove('hide');
       bLabel.innerHTML = bi(m.bZh, m.bEn);
       if (reset) setRange(bEl, bOut, m.b);
     } else {
-      bWrap.classList.add('pg-hidden');
+      bWrap.classList.add('hide');
     }
-    render();
+    runWorkbench();
+  }
+  function params() {
+    return {
+      st: stratEl.value,
+      a: parseInt(aEl.value, 10),
+      b: bEl.value && !bWrap.classList.contains('hide') ? parseInt(bEl.value, 10) : 0,
+      stop: parseInt(stopEl.value, 10) / 100,
+      costs: costsEl.checked
+    };
   }
 
-  function draw(eq, bh) {
-    var dpr = window.devicePixelRatio || 1;
-    var w = canvas.clientWidth, h = canvas.clientHeight;
-    canvas.width = w * dpr; canvas.height = h * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    var lo = Math.min(Math.min.apply(null, eq), Math.min.apply(null, bh));
-    var hi = Math.max(Math.max.apply(null, eq), Math.max.apply(null, bh));
-    var pad = (hi - lo) * 0.08 || 0.01; lo -= pad; hi += pad;
-    var L = 8, R = w - 8, T = 8, B = h - 8;
-    ctx.strokeStyle = 'rgba(128,128,128,.2)'; ctx.lineWidth = 1;
-    for (var g = 0; g <= 4; g++) {
-      var gy = T + (B - T) * g / 4;
-      ctx.beginPath(); ctx.moveTo(L, gy); ctx.lineTo(R, gy); ctx.stroke();
-    }
-    function line(series, color) {
-      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
-      for (var i = 0; i < series.length; i++) {
-        var x = L + (R - L) * i / (series.length - 1);
-        var y = B - (B - T) * (series[i] - lo) / (hi - lo);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-    line(bh, '#8a94a6');
-    line(eq, '#1f6feb');
+  // ---------- workbench ----------
+  function statusOf(t) {
+    if (t.open) return { k: 'open', html: bi('持有中', 'Open') };
+    if (t.stopped) return { k: 'stop', html: bi('停損出場', 'Stop exit') };
+    return { k: 'signal', html: bi('訊號出場', 'Signal exit') };
   }
 
-  function render() {
-    var a = parseInt(aEl.value, 10), b = bEl.value ? parseInt(bEl.value, 10) : 0;
-    var stop = parseInt(stopEl.value, 10) / 100;
-    aOut.textContent = a; bOut.textContent = b || '';
-    stopOut.textContent = stop > 0 ? (stop * 100).toFixed(0) + '%' : '0';
-    var sig = signals(stratEl.value, prices, a, b);
-    var res = backtest(prices, sig, { stop: stop, costs: costsEl.checked });
-    var m = metrics(prices, res);
-    var bh = prices.map(function (x) { return x / prices[0]; });
-    draw(res.eq, bh);
-    metricsEl.innerHTML =
+  function runWorkbench() {
+    var P = params();
+    aOut.textContent = P.a; bOut.textContent = P.b || '';
+    stopOut.textContent = P.stop > 0 ? (P.stop * 100).toFixed(0) + '%' : '0';
+    var full = backtest(prices, signals(P.st, prices, P.a, P.b), { stop: P.stop, costs: P.costs });
+    var n = prices.length, span = parseInt($('t-range').value, 10);
+    var start = span > 0 ? Math.max(0, n - 1 - span) : 0;
+    var eqSub = full.eq.slice(start).map(function (v) { return v / full.eq[start]; });
+    var bhSub = prices.slice(start).map(function (x) { return x / prices[start]; });
+    var retsSub = full.rets.slice(start);
+    var list = full.list.filter(function (t) { return t.entryDay >= start; });
+    var m = metricsCore(eqSub, retsSub, list.length, bhSub[bhSub.length - 1] - 1);
+    var res = { eq: eqSub, list: list };
+    last = { P: P, res: res, m: m, bh: bhSub, start: start };
+    redrawWorkbench();
+
+    var gains = 0, losses = 0;
+    list.forEach(function (t) { if (t.ret > 0) gains += t.ret; else losses += -t.ret; });
+    var pf = losses > 0 ? gains / losses : null;
+    $('t-kpis').innerHTML =
       '<div><b>' + pct(m.total) + '</b>' + bi('總報酬', 'Total return') + '</div>' +
       '<div><b>' + pct(m.cagr) + '</b>' + bi('年化報酬', 'CAGR') + '</div>' +
       '<div><b>' + pct(m.mdd) + '</b>' + bi('最大回撤', 'Max drawdown') + '</div>' +
-      '<div><b>' + m.sharpe.toFixed(2) + '</b>' + bi('Sharpe（年化）', 'Sharpe (annualized)') + '</div>' +
+      '<div><b>' + f2(m.sharpe) + '</b>' + bi('Sharpe（年化）', 'Sharpe (annualized)') + '</div>' +
+      '<div><b>' + (pf === null ? '—' : f2(pf)) + '</b>' + bi('獲利因子（交易）', 'Profit factor (trades)') + '</div>' +
       '<div><b>' + m.trades + '</b>' + bi('進場次數', 'Entries') + '</div>' +
       '<div><b>' + pct(m.buyHold) + '</b>' + bi('買進持有報酬', 'Buy &amp; hold return') + '</div>';
-    document.getElementById('pg-seed').textContent = seed;
-    document.getElementById('pg-seed-en').textContent = seed;
+
+    var rows = list.map(function (t, i) {
+      var s = statusOf(t);
+      return { idx: i + 1, entryDay: t.entryDay, exitDay: t.exitDay, entryPrice: t.entryPrice, exitPrice: t.exitPrice, ret: t.ret, statusKey: s.k, statusHtml: s.html };
+    });
+    $('t-trade-count').textContent = '· ' + rows.length;
+    renderTable($('t-trades'), [
+      { k: 'idx', zh: '#', en: '#', num: true, f: function (v) { return String(v); } },
+      { k: 'entryDay', zh: '進場日', en: 'Entry day', num: true, f: function (v) { return String(v); } },
+      { k: 'exitDay', zh: '出場日', en: 'Exit day', num: true, f: function (v) { return String(v); } },
+      { k: 'entryPrice', zh: '進場價', en: 'Entry price', num: true, f: f2 },
+      { k: 'exitPrice', zh: '出場價', en: 'Exit price', num: true, f: f2 },
+      { k: 'ret', zh: '單筆報酬', en: 'Trade return', num: true, f: pct },
+      { k: 'statusKey', zh: '狀態', en: 'Status', html: function (r) { return r.statusHtml; } }
+    ], rows, null);
+
+    var pName = P.st === 'momentum' ? ['回看天數', 'Lookback'] : (P.st === 'sma' ? ['快線天數', 'Fast window'] : ['進場回看', 'Entry lookback']);
+    var sweepRows = sweep(P.st, prices.slice(start), P.b, { stop: P.stop, costs: P.costs });
+    renderTable($('t-sweep'), [
+      { k: 'param', zh: pName[0], en: pName[1], num: true, f: function (v) { return String(v); } },
+      { k: 'total', zh: '總報酬', en: 'Total return', num: true, f: pct },
+      { k: 'mdd', zh: '最大回撤', en: 'Max drawdown', num: true, f: pct },
+      { k: 'sharpe', zh: 'Sharpe', en: 'Sharpe', num: true, f: f2 },
+      { k: 'trades', zh: '進場次數', en: 'Entries', num: true, f: function (v) { return String(v); } }
+    ], sweepRows, function (r) { return r.param === P.a; });
   }
 
+  function redrawWorkbench() {
+    if (!last) return;
+    drawChart($('t-chart'), [
+      { data: last.bh, color: COLORS.bh },
+      { data: last.res.eq, color: COLORS[last.P.st] }
+    ], hoverIdx);
+  }
+
+  var tChart = $('t-chart'), tTip = $('t-tip');
+  tChart.addEventListener('mousemove', function (ev) {
+    var g = tChart._g; if (!g || !last) return;
+    var rect = tChart.getBoundingClientRect();
+    var x = ev.clientX - rect.left;
+    var i = Math.round((x - g.L) / (g.R - g.L) * (g.n - 1));
+    if (i < 0) i = 0; if (i > g.n - 1) i = g.n - 1;
+    hoverIdx = i;
+    redrawWorkbench();
+    tTip.style.display = 'block';
+    tTip.style.left = Math.min(x + 12, rect.width - 170) + 'px';
+    tTip.style.top = '8px';
+    tTip.innerHTML = bi('第 ' + (i + last.start) + ' 天', 'Day ' + (i + last.start)) + '<br>' +
+      bi('策略', 'Strategy') + ' ' + pct(last.res.eq[i] - 1) + '<br>' +
+      bi('買進持有', 'Buy &amp; hold') + ' ' + pct(last.bh[i] - 1);
+  });
+  tChart.addEventListener('mouseleave', function () {
+    hoverIdx = -1; redrawWorkbench(); tTip.style.display = 'none';
+  });
+
+  $('t-range').addEventListener('change', runWorkbench);
   stratEl.addEventListener('change', function () { applyMode(true); });
-  aEl.addEventListener('input', render);
-  bEl.addEventListener('input', render);
-  stopEl.addEventListener('input', render);
-  costsEl.addEventListener('change', render);
-  document.getElementById('pg-reset').addEventListener('click', function () {
+  aEl.addEventListener('input', runWorkbench);
+  bEl.addEventListener('input', runWorkbench);
+  stopEl.addEventListener('input', runWorkbench);
+  costsEl.addEventListener('change', runWorkbench);
+  $('t-reset').addEventListener('click', function () {
     setRange(stopEl, stopOut, [0, 30, 0]); costsEl.checked = true; applyMode(true);
   });
-  document.getElementById('pg-new').addEventListener('click', function () {
+  $('t-new').addEventListener('click', newData);
+
+  function newData() {
     seed = Math.floor(Math.random() * 1000000) + 1;
     prices = makePrices(seed);
-    render();
-  });
-  window.addEventListener('resize', render);
+    runWorkbench(); runCompare();
+  }
 
-  document.getElementById('lang').addEventListener('click', function () {
+  // ---------- downloads ----------
+  $('dl-equity').addEventListener('click', function () {
+    if (!last) return;
+    var lines = ['day,strategy_equity,buy_hold_equity'];
+    for (var i = 0; i < last.res.eq.length; i++) lines.push((i + last.start) + ',' + last.res.eq[i].toFixed(6) + ',' + last.bh[i].toFixed(6));
+    download('equity_' + last.P.st + '_seed' + seed + '.csv', lines.join('\n') + '\n', 'text/csv');
+  });
+  $('dl-trades').addEventListener('click', function () {
+    if (!last) return;
+    var lines = ['entry_day,exit_day,entry_price,exit_price,return,stop_exit,open'];
+    last.res.list.forEach(function (t) {
+      lines.push([t.entryDay, t.exitDay, t.entryPrice.toFixed(4), t.exitPrice.toFixed(4), t.ret.toFixed(6), t.stopped ? 1 : 0, t.open ? 1 : 0].join(','));
+    });
+    download('trades_' + last.P.st + '_seed' + seed + '.csv', lines.join('\n') + '\n', 'text/csv');
+  });
+  $('dl-report').addEventListener('click', function () {
+    if (!last) return;
+    download('report_' + last.P.st + '_seed' + seed + '.html', buildReport(), 'text/html');
+  });
+
+  function buildReport() {
+    var P = last.P, m = last.m, res = last.res, bh = last.bh;
+    var W = 800, H = 280, n = res.eq.length, lo = Infinity, hi = -Infinity;
+    [res.eq, bh].forEach(function (s) { s.forEach(function (v) { if (v < lo) lo = v; if (v > hi) hi = v; }); });
+    function poly(s) { return s.map(function (v, i) { return (i * W / (n - 1)).toFixed(1) + ',' + (H - (v - lo) / (hi - lo) * H).toFixed(1); }).join(' '); }
+    var trs = res.list.map(function (t, i) {
+      return '<tr><td>' + (i + 1) + '</td><td>' + t.entryDay + '</td><td>' + t.exitDay + '</td><td>' + t.entryPrice.toFixed(2) + '</td><td>' + t.exitPrice.toFixed(2) + '</td><td>' + pct(t.ret) + '</td><td>' + (t.open ? 'open' : (t.stopped ? 'stop' : 'signal')) + '</td></tr>';
+    }).join('');
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>TW Strategy Lab report (simulated)</title>' +
+      '<style>body{font-family:-apple-system,Arial,sans-serif;max-width:900px;margin:24px auto;padding:0 16px;color:#1d2433}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid #e3e7ee;padding:6px;text-align:right}th:first-child,td:first-child{text-align:left}</style></head><body>' +
+      '<h1>Backtest report (simulated data)</h1>' +
+      '<p>Strategy: ' + NAMES[P.st][1] + ' · Parameters: ' + (P.st === 'momentum' ? 'lookback ' + P.a : 'A ' + P.a + ', B ' + P.b) + ' · Stop loss: ' + (P.stop * 100).toFixed(0) + '% · Costs: ' + (P.costs ? 'on' : 'off') + ' · Dataset ' + seed + '</p>' +
+      '<table><tr><th>Total return</th><th>CAGR</th><th>Max drawdown</th><th>Sharpe</th><th>Entries</th><th>Buy &amp; hold</th></tr>' +
+      '<tr><td>' + pct(m.total) + '</td><td>' + pct(m.cagr) + '</td><td>' + pct(m.mdd) + '</td><td>' + f2(m.sharpe) + '</td><td>' + m.trades + '</td><td>' + pct(m.buyHold) + '</td></tr></table>' +
+      '<h2>Equity</h2><svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="border:1px solid #e3e7ee">' +
+      '<polyline fill="none" stroke="#8a94a6" stroke-width="2" points="' + poly(bh) + '"/>' +
+      '<polyline fill="none" stroke="#1f6feb" stroke-width="2" points="' + poly(res.eq) + '"/></svg>' +
+      '<p>Blue: strategy. Grey: buy &amp; hold. Simulated prices, not real market data. Costs: commission 0.1425% per side, sell tax 0.3%, slippage 0.05%.</p>' +
+      '<h2>Trades</h2><table><tr><th>#</th><th>Entry day</th><th>Exit day</th><th>Entry price</th><th>Exit price</th><th>Return</th><th>Status</th></tr>' + trs + '</table>' +
+      '<p>For educational purposes only. Not investment advice.</p></body></html>';
+  }
+
+  // ---------- compare ----------
+  function runCompare() {
+    var cvs = $('c-chart');
+    var names = ['sma', 'donchian', 'momentum'];
+    var series = [], rows = [];
+    names.forEach(function (st) {
+      var d = DEFAULTS[st];
+      var res = backtest(prices, signals(st, prices, d.a, d.b), { costs: true });
+      var m = metrics(prices, res);
+      series.push({ data: res.eq, color: COLORS[st] });
+      rows.push({ st: st, params: st === 'momentum' ? 'lookback ' + d.a : 'A ' + d.a + ' / B ' + d.b, total: m.total, cagr: m.cagr, mdd: m.mdd, sharpe: m.sharpe, trades: m.trades, nameHtml: bi(NAMES[st][0], NAMES[st][1]) });
+    });
+    var bh = prices.map(function (x) { return x / prices[0]; });
+    series.push({ data: bh, color: COLORS.bh });
+    drawChart(cvs, series, -1);
+    renderTable($('c-table'), [
+      { k: 'nameHtml', zh: '策略', en: 'Strategy', html: function (r) { return r.nameHtml; } },
+      { k: 'params', zh: '預設參數', en: 'Default parameters' },
+      { k: 'total', zh: '總報酬', en: 'Total return', num: true, f: pct },
+      { k: 'cagr', zh: '年化報酬', en: 'CAGR', num: true, f: pct },
+      { k: 'mdd', zh: '最大回撤', en: 'Max drawdown', num: true, f: pct },
+      { k: 'sharpe', zh: 'Sharpe', en: 'Sharpe', num: true, f: f2 },
+      { k: 'trades', zh: '進場次數', en: 'Entries', num: true, f: function (v) { return String(v); } }
+    ], rows, null);
+  }
+
+  // ---------- routing and language ----------
+  var PAGES = ['home', 'try', 'compare', 'metrics'];
+  function route() {
+    var h = (location.hash || '#/home').replace(/^#\/?/, '') || 'home';
+    if (PAGES.indexOf(h) < 0) h = 'home';
+    document.querySelectorAll('.page').forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-page') === h); });
+    document.querySelectorAll('nav.main a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-nav') === h); });
+    if (h === 'try') runWorkbench();
+    if (h === 'compare') runCompare();
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  window.addEventListener('resize', function () { redrawWorkbench(); });
+
+  $('lang').addEventListener('click', function () {
     var en = document.documentElement.lang !== 'en';
     document.documentElement.lang = en ? 'en' : 'zh-TW';
     this.textContent = en ? '中文' : 'English';
+    if (last) redrawWorkbench();
   });
 
   applyMode(true);
+  route();
 })();
 </script>
 </body>
