@@ -1,0 +1,42 @@
+name: Fetch daily prices
+
+on:
+  schedule:
+    # 08:30 UTC daily: after Taiwan (06:00 UTC close), Hong Kong and China (08:00 UTC) closes
+    - cron: "30 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-prices
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install yfinance pandas
+
+      - name: Fetch prices
+        run: python scripts/fetch_prices.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "TW Strategy Lab"
+          git config user.email "tw-strategy-lab@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "Update daily prices"
+            git push
+          fi

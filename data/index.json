@@ -1,0 +1,148 @@
+{
+ "updated": "2026-11-28 15:25 UTC",
+ "source": "Yahoo Finance via yfinance (daily close, dividend- and split-adjusted)",
+ "window_days": 750,
+ "symbols": [
+  {
+   "symbol": "2330.TW",
+   "name": "台積電 TSMC",
+   "market": "TW",
+   "currency": "TWD",
+   "n": 750,
+   "start": "2023-10-26",
+   "end": "2026-11-27",
+   "file": "data/prices/2330_TW.json"
+  },
+  {
+   "symbol": "0050.TW",
+   "name": "元大台灣50 Yuanta Taiwan 50 ETF",
+   "market": "TW",
+   "currency": "TWD",
+   "n": 750,
+   "start": "2023-10-27",
+   "end": "2026-11-27",
+   "file": "data/prices/0050_TW.json"
+  },
+  {
+   "symbol": "2317.TW",
+   "name": "鴻海 Hon Hai",
+   "market": "TW",
+   "currency": "TWD",
+   "n": 750,
+   "start": "2023-10-26",
+   "end": "2026-11-27",
+   "file": "data/prices/2317_TW.json"
+  },
+  {
+   "symbol": "2454.TW",
+   "name": "聯發科 MediaTek",
+   "market": "TW",
+   "currency": "TWD",
+   "n": 750,
+   "start": "2023-10-26",
+   "end": "2026-11-27",
+   "file": "data/prices/2454_TW.json"
+  },
+  {
+   "symbol": "0700.HK",
+   "name": "騰訊控股 Tencent",
+   "market": "HK",
+   "currency": "HKD",
+   "n": 750,
+   "start": "2023-11-10",
+   "end": "2026-11-27",
+   "file": "data/prices/0700_HK.json"
+  },
+  {
+   "symbol": "0005.HK",
+   "name": "匯豐控股 HSBC Holdings",
+   "market": "HK",
+   "currency": "HKD",
+   "n": 750,
+   "start": "2023-11-10",
+   "end": "2026-11-27",
+   "file": "data/prices/0005_HK.json"
+  },
+  {
+   "symbol": "9988.HK",
+   "name": "阿里巴巴-SW Alibaba",
+   "market": "HK",
+   "currency": "HKD",
+   "n": 750,
+   "start": "2023-11-10",
+   "end": "2026-11-27",
+   "file": "data/prices/9988_HK.json"
+  },
+  {
+   "symbol": "AAPL",
+   "name": "Apple",
+   "market": "US",
+   "currency": "USD",
+   "n": 750,
+   "start": "2023-12-01",
+   "end": "2026-11-27",
+   "file": "data/prices/AAPL.json"
+  },
+  {
+   "symbol": "MSFT",
+   "name": "Microsoft",
+   "market": "US",
+   "currency": "USD",
+   "n": 750,
+   "start": "2023-12-01",
+   "end": "2026-11-27",
+   "file": "data/prices/MSFT.json"
+  },
+  {
+   "symbol": "NVDA",
+   "name": "NVIDIA",
+   "market": "US",
+   "currency": "USD",
+   "n": 750,
+   "start": "2023-12-01",
+   "end": "2026-11-27",
+   "file": "data/prices/NVDA.json"
+  },
+  {
+   "symbol": "SPY",
+   "name": "SPDR S&P 500 ETF",
+   "market": "US",
+   "currency": "USD",
+   "n": 750,
+   "start": "2023-12-01",
+   "end": "2026-11-27",
+   "file": "data/prices/SPY.json"
+  },
+  {
+   "symbol": "600519.SS",
+   "name": "貴州茅台 Kweichow Moutai",
+   "market": "CN",
+   "currency": "CNY",
+   "n": 750,
+   "start": "2023-10-26",
+   "end": "2026-11-27",
+   "file": "data/prices/600519_SS.json"
+  },
+  {
+   "symbol": "000858.SZ",
+   "name": "五糧液 Wuliangye",
+   "market": "CN",
+   "currency": "CNY",
+   "n": 750,
+   "start": "2023-10-26",
+   "end": "2026-11-27",
+   "file": "data/prices/000858_SZ.json"
+  },
+  {
+   "symbol": "601318.SS",
+   "name": "中國平安 Ping An",
+   "market": "CN",
+   "currency": "CNY",
+   "n": 750,
+   "start": "2023-10-26",
+   "end": "2026-11-27",
+   "file": "data/prices/601318_SS.json"
+  }
+ ],
+ "failures": []
+}
